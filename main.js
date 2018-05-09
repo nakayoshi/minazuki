@@ -18,14 +18,30 @@ client.on('ready', () => {
 client.on('message', async (message) => {
   const { author, content } = message;
 
-  console.log(`${author.username}: ${content}`);
+  if ( author.bot ) {
+    return;
+  }
 
-  if (/^\/wiki\s(.+?)$/.test(content)) {
+  if (/^\/wiki/.test(content)) {
     const [, query] = content.match(/^\/wiki\s(.+?)$/);
 
-    const page    = await wiki.page(query);
-    const summary = await page.summary();
+    if ( !query ) {
+      message.reply('キーワードを指定してくだせー');
+    }
 
-    await message.reply(summary);
+    searchWikipedia(query).then((response) => message.reply(response));
+  } else if (/^(.+?)(って(何(ですか)*|な(あ|ぁ)*に|なん(ですか)*)|とは)/.test(content)) {
+    const [, query] = content.match(/^(.+?)(って(何(ですか)*|な(あ|ぁ)*に|なん(ですか)*)|とは)/);
+    searchWikipedia(query).then((response) => message.reply(response));
   }
 });
+
+async function searchWikipedia (keyword) {
+  try {
+    const page    = await wiki.page(keyword);
+    const summary = await page.summary();
+    return summary;
+  } catch (e) {
+    return '記事が見つからなかったです。';
+  }
+}
