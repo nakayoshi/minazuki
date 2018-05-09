@@ -2,14 +2,16 @@
   "name": "minazuki-bot-discord",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "main.js",
   "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "forever start main.js",
+    "stop": "forever stop main.js"
   },
   "dependencies": {
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
+    "forever": "^0.15.3",
     "wikijs": "^4.7.0"
   }
 }
