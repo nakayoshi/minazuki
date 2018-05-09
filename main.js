@@ -32,8 +32,8 @@ client.on('message', async (message) => {
     const response = await searchWikipedia(query);
     await message.reply(response);
 
-  } else if (/^(.+?)(って(何((で)すか)*|な(あ|ぁ)*に|なん(なん|なの)*(ですか)*)|とは)[\?\？]*$/.test(content)) {
-    const [, query] = content.match(/^(.+?)(って(何(ですか)*|な(あ|ぁ)*に|なん(ですか)*)|とは)[\?\？]*$/);
+  } else if (/^(.+?)(って(何((で)*すか)*|な(あ|ぁ)*に|なん(なん|なの)*(ですか)*)|とは)[\?\？]*$/.test(content)) {
+    const [, query] = content.match(/^(.+?)(って(何((で)*すか)*|な(あ|ぁ)*に|なん(なん|なの)*(ですか)*)|とは)[\?\？]*$/);
     const response = await searchWikipedia(query);
     await message.reply(response);
   }
