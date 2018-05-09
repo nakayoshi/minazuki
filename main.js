@@ -29,10 +29,13 @@ client.on('message', async (message) => {
       message.reply('キーワードを指定してくだせー');
     }
 
-    searchWikipedia(query).then((response) => message.reply(response));
+    const response = await searchWikipedia(query);
+    await message.reply(response);
+
   } else if (/^(.+?)(って(何(ですか)*|な(あ|ぁ)*に|なん(ですか)*)|とは)/.test(content)) {
     const [, query] = content.match(/^(.+?)(って(何(ですか)*|な(あ|ぁ)*に|なん(ですか)*)|とは)/);
-    searchWikipedia(query).then((response) => message.reply(response));
+    const response = await searchWikipedia(query);
+    await message.reply(response);
   }
 });
 
