@@ -1,19 +1,20 @@
 import * as path from 'path';
-import dotenv from 'dotenv';
-import Discord from 'discord.js';
+import * as dotenv from 'dotenv';
+import * as Discord from 'discord.js';
 import {
   searchWikipedia,
-  getVoicetextAudio,
+  Voicetext,
 } from './utils';
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-const client = new Discord.Client();
-let vc: Discord.VoiceConnection;
-
-if ( !process.env.DISCORD_TOKEN ) {
+if ( !process.env.DISCORD_TOKEN || !process.env.VOICETEXT_TOKEN) {
   process.exit(1);
 }
+
+const client = new Discord.Client();
+const voicetext = new Voicetext(process.env.VOICETEXT_TOKEN as string);
+let vc: Discord.VoiceConnection|null;
 
 client.login(process.env.DISCORD_TOKEN);
 
@@ -28,8 +29,8 @@ client.on('message', async (message: Discord.Message) => {
     return;
   }
 
-  if ( vc !== undefined ) {
-    vc.playFile(await getVoicetextAudio(content));
+  if ( vc ) {
+    vc.playFile(await voicetext.getVoicetextAudio(content));
   }
 
   /**
@@ -63,7 +64,8 @@ client.on('message', async (message: Discord.Message) => {
    * Voice chat kicking out feature
    */
   if (/^\/leave/.test(content) && member.voiceChannel) {
-    vc = await member.voiceChannel.join();
+    await member.voiceChannel.leave();
+    vc = null;
     await message.reply('ボイスチャットから退出しました');
   }
 });
