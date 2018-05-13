@@ -58,4 +58,4 @@ jspm_packages/
 .env
 
 
-./es
+es/*
