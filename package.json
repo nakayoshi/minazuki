@@ -5,13 +5,24 @@
   "main": "main.js",
   "license": "MIT",
   "scripts": {
-    "start": "forever start main.js",
+    "build": "tsc",
+    "start": "yarn run build && forever start main.js",
     "stop": "forever stop main.js"
   },
   "dependencies": {
+    "@types/dotenv": "^4.0.3",
+    "@types/form-data": "^2.2.1",
+    "@types/fs-promise": "^1.0.3",
+    "@types/node-fetch": "^1.6.9",
+    "@types/tmp": "^0.0.33",
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
     "forever": "^0.15.3",
+    "form-data": "^2.3.2",
+    "fs-promise": "^2.0.3",
+    "node-fetch": "^2.1.2",
+    "tmp": "^0.0.33",
+    "typescript": "^2.8.3",
     "wikijs": "^4.7.0"
   }
 }
