@@ -29,7 +29,7 @@ client.on('message', async (message: Discord.Message) => {
     return;
   }
 
-  if ( vc ) {
+  if ( vc && /^[\!\?\/]/ ) {
     vc.playFile(await voicetext.getVoicetextAudio(content));
   }
 
