@@ -29,8 +29,17 @@ client.on('message', async (message: Discord.Message) => {
     return;
   }
 
-  if ( vc && content && /^[^\!\?\/\<\>]/.test(content) ) {
-    vc.playFile(await voicetext.getVoicetextAudio(content));
+  if ( vc && content && /^[^\!\?\/]/.test(content) ) {
+    let validatedContent: string;
+    console.log(content);
+
+    if ( /^<@[0-9]+>\s(.*?)$/.test(content) ) {
+      [, validatedContent] = content.match(/^<@[0-9]+>\s(.*?)$/) as string[];
+    } else {
+      validatedContent = content;
+    }
+
+    vc.playFile(await voicetext.getVoicetextAudio(validatedContent));
   }
 
   /**
