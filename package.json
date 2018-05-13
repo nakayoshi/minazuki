@@ -2,11 +2,11 @@
   "name": "minazuki-bot-discord",
   "version": "1.0.0",
   "private": true,
-  "main": "main.js",
+  "main": "./es/main.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "yarn run build && forever start main.js",
+    "start": "yarn run build && forever start ./es/main.js",
     "stop": "forever stop main.js"
   },
   "dependencies": {
