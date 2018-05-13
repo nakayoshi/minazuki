@@ -31,7 +31,6 @@ client.on('message', async (message: Discord.Message) => {
 
   if ( vc && content && /^[^\!\?\/]/.test(content) ) {
     let validatedContent: string;
-    console.log(content);
 
     if ( /^<@[0-9]+>\s(.*?)$/.test(content) ) {
       [, validatedContent] = content.match(/^<@[0-9]+>\s(.*?)$/) as string[];
