@@ -1,3 +1,4 @@
+import * as path from 'path';
 import dotenv from 'dotenv';
 import Discord from 'discord.js';
 import {
@@ -5,7 +6,7 @@ import {
   getVoicetextAudio,
 } from './utils';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 const client = new Discord.Client();
 let vc: Discord.VoiceConnection;
