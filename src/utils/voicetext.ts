@@ -1,37 +1,45 @@
-import dotenv from 'dotenv';
-import FormData from 'form-data';
 import fetch from 'node-fetch';
+import * as FormData from 'form-data';
 import * as fs from 'fs-promise';
 import * as tmp from 'tmp';
-
-dotenv.config();
 
 const VOICETEXT_URL     = 'https://api.voicetext.jp/v1';
 const VOICETEXT_SPEAKER = 'haruka';
 
-export async function getVoicetextAudio (text: string) {
-  if ( !process.env.VOICETEXT_TOKEN ) {
-    process.exit(1);
+export class Voicetext {
+
+  token: string = '';
+
+  constructor(token: string) {
+    this.token = token;
   }
 
-  const { name: tmpFile } = tmp.fileSync();
+  public async getVoicetextAudio (text: string) {
+    if ( !process.env.VOICETEXT_TOKEN ) {
+      process.exit(1);
+    }
 
-  const formData       = new FormData();
-  const formattedToken = new Buffer(`${process.env.VOICETEXT_TOKEN}:`).toString("base64");
+    const { name: tmpFile } = tmp.fileSync();
 
-  formData.append('text',    text);
-  formData.append('speaker', VOICETEXT_SPEAKER);
+    const formData       = new FormData();
+    const formattedToken = new Buffer(`${this.token}:`).toString("base64");
 
-  const response = await fetch(`${VOICETEXT_URL}/tts`, {
-    headers: { 'Authorization': `Basic: ${formattedToken}:` },
-    body: formData,
-  });
+    formData.append('text',    text);
+    formData.append('speaker', VOICETEXT_SPEAKER);
 
-  if (!response.ok) {
-    throw 'Fetching WAV failed';
+    const response = await fetch(`${VOICETEXT_URL}/tts`, {
+      method: 'POST',
+      headers: { 'Authorization': `Basic: ${formattedToken}:` },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      console.log(await response.json());
+      throw 'Fetching WAV failed';
+    }
+
+    await fs.writeFile(tmpFile, await response.buffer());
+
+    return tmpFile;
   }
-
-  await fs.writeFile(tmpFile, await response.buffer());
-
-  return tmpFile;
 }
