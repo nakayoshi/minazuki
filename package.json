@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "yarn run build && forever start ./es/main.js",
-    "stop": "forever stop main.js"
+    "stop": "forever stop ./es/main.js"
   },
   "dependencies": {
     "@types/dotenv": "^4.0.3",
