@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import * as fs from 'fs-promise';
+import * as fs from 'fs/promises';
 import * as tmp from 'tmp';
 import * as queryString from 'query-string';
 
