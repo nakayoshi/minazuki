@@ -1,43 +1,52 @@
-import fetch from 'node-fetch';
 import * as fs from 'fs/promises';
-import * as tmp from 'tmp';
+import fetch from 'node-fetch';
 import * as queryString from 'query-string';
+import * as tmp from 'tmp';
 
-const VOICETEXT_URL     = 'https://api.voicetext.jp/v1';
-const VOICETEXT_SPEAKER = 'haruka';
+export default class VoiceText {
 
-export class Voicetext {
+  protected token   = '';
+  protected url     = 'https://api.voicetext.jp/v1';
+  protected speaker = 'haruka';
 
-  token: string = '';
-
-  constructor(token: string) {
+  constructor (token: string) {
     this.token = token;
   }
 
-  public async getVoicetextAudio (text: string) {
-    if ( !process.env.VOICETEXT_TOKEN ) {
-      process.exit(1);
+  /**
+   * Fetching audio data from VoiceText API
+   * @param text Text to speak
+   * @return Path to aduio file or False
+   */
+  public speak = async (text: string): Promise<string> => {
+    if ( !this.token ) {
+      console.error(`
+        VoiceText: Authentication token is not specified
+        See also https://cloud.voicetext.jp/webapi
+      `);
+
+      throw new Error('Fetching WAV failed');
     }
 
     const { name: tmpFile } = tmp.fileSync();
     const formattedToken = Buffer.from(`${this.token}:`).toString('base64');
 
-    const data = queryString.stringify({
-      text,
-      speaker: VOICETEXT_SPEAKER,
-    })
-
-    const response = await fetch(`${VOICETEXT_URL}/tts`, {
+    const response = await fetch(`${this.url}/tts`, {
       method: 'POST',
+
       headers: {
         'Authorization': `Basic ${formattedToken}`,
         'Content-Type':  'application/x-www-form-urlencoded',
       },
-      body: data,
+
+      body: queryString.stringify({
+        text,
+        speaker: this.speaker,
+      }),
     });
 
     if (!response.ok) {
-      throw 'Fetching WAV failed';
+      throw new Error('Fetching WAV failed');
     }
 
     await fs.writeFile(tmpFile, await response.buffer());

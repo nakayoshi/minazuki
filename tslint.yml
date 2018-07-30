@@ -12,6 +12,7 @@ rules:
   object-literal-sort-keys: false
   max-line-length: false
   variable-name: false
+  no-console: false
   no-shadowed-variable: false
   no-consecutive-blank-lines: false
   interface-name:
