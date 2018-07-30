@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "start": "yarn run build && forever start ./es/main.js",
-    "stop": "forever stop ./es/main.js"
+    "stop": "forever stop ./es/main.js",
+    "start:sync": "yarn run build && node ./es/main.js"
   },
   "engines": {
     "node": ">=10"
