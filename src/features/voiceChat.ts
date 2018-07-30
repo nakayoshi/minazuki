@@ -39,6 +39,10 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
   const channelId = message.channel.id;
   const { content, member } = message;
 
+  if (message.author.bot) {
+    return;
+  }
+
   if (c('join').test(content) && member) {
     if (!member.voiceChannel) {
       await message.reply('発言者がボイスチャットに参加している場合のみ参加可能です');

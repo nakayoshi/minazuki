@@ -26,10 +26,6 @@ class MinazukiBot {
   }
 
   protected onMessage = (message: Discord.Message) => {
-    if (message.author.bot) {
-      return;
-    }
-
     middleware.run(message);
   }
 }

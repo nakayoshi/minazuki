@@ -12,6 +12,10 @@ const client = new Wikipedia();
 export async function wikipedia (message: Discord.Message, next: () => void): Promise<any> {
   const { content } = message;
 
+  if (message.author.bot) {
+    return;
+  }
+
   if (c('wiki').test(content)) {
     const result = content.match(c('wiki\\s?(.+?)$'));
 
