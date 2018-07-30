@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import * as fs from 'fs';
 import fetch from 'node-fetch';
 import * as queryString from 'query-string';
 import * as tmp from 'tmp';
@@ -49,7 +49,7 @@ export default class VoiceText {
       throw new Error('Fetching WAV failed');
     }
 
-    await fs.writeFile(tmpFile, await response.buffer());
+    await fs.promises.writeFile(tmpFile, await response.buffer());
 
     return tmpFile;
   }

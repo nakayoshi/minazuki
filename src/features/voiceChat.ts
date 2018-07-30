@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import Middleware from '.';
 import config from '../config';
+import c from '../utils/generateCommandRegexp';
 import validateVoiceChat from '../utils/validateVoiceChat';
 import VoiceText from '../utils/VoiceText';
 
@@ -12,7 +12,7 @@ const connections: { [key: string]: Discord.VoiceConnection } = {};
  * @param message Message which recieved
  * @param next The next middleware
  */
-async function voiceChat (message: Discord.Message, next: () => void) {
+export async function voiceChat (message: Discord.Message, next: () => void) {
   const channelId  = message.channel.id;
 
   if (connections[channelId]) {
@@ -35,11 +35,11 @@ async function voiceChat (message: Discord.Message, next: () => void) {
  * @param message Message which recieved
  * @param next The next middleware
  */
-async function controlConnections (message: Discord.Message, next: () => void): Promise<void> {
+export async function controlVoiceConnections (message: Discord.Message, next: () => void): Promise<void> {
   const channelId = message.channel.id;
   const { content, member } = message;
 
-  if (/^\/join/.test(content)) {
+  if (c('join').test(content) && member) {
     if (!member.voiceChannel) {
       await message.reply('発言者がボイスチャットに参加している場合のみ参加可能です');
     } else {
@@ -47,7 +47,7 @@ async function controlConnections (message: Discord.Message, next: () => void): 
       await message.reply('ボイスチャットに参加しました');
     }
 
-  } else if (/^\/leave/.test(content) && member.voiceChannel) {
+  } else if (c('leave').test(content) && member && member.voiceChannel) {
     if (!member.voiceChannel) {
       await message.reply('発言者がボイスチャットに参加している場合のみ退出可能です');
     } else {
@@ -60,5 +60,3 @@ async function controlConnections (message: Discord.Message, next: () => void): 
     next();
   }
 }
-
-Middleware.append(voiceChat, controlConnections);

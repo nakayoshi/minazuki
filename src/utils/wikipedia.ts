@@ -15,7 +15,7 @@ export default class Wikipedia  {
     try {
       const { results } = await this.cleint.search(keyword);
 
-      if (results.length) {
+      if (!results.length) {
         return null;
       }
 

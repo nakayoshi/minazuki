@@ -1,12 +1,17 @@
 import * as Discord from 'discord.js';
 import config from './config';
-import middleware from './middlewares';
+import './features';
+import middleware from './middleware';
 
 if ( !config.discordToken || !config.discordToken) {
   process.exit(1);
 }
 
-export default class MinazukiBot {
+class MinazukiBot {
+  /** Prefix for commands */
+  public prefix: string = '';
+
+  /** Instance of the client */
   protected client = new Discord.Client();
 
   constructor () {
@@ -17,9 +22,16 @@ export default class MinazukiBot {
 
   protected onReady = () => {
     console.log(`Logged in as ${this.client.user.tag}!`);
+    this.prefix = `<@${this.client.user.id}>`;
   }
 
   protected onMessage = (message: Discord.Message) => {
+    if (message.author.bot) {
+      return;
+    }
+
     middleware.run(message);
   }
 }
+
+export default new MinazukiBot();
