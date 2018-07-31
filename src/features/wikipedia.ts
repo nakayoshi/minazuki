@@ -31,7 +31,7 @@ export async function wikipedia (message: Discord.Message, next: () => void): Pr
     }
 
     let summary = await page.summary();
-    summary = summary.replace(/\n/, ' ');
+    summary = summary.replace(/\n/g, ' ');
     summary = summary.substr(0, 200) + '...';
 
     message.reply(`${summary}\nhttps://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
