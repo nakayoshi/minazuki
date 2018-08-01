@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import c from '../utils/generateCommandRegexp';
-import Wikipedia from '../utils/wikipedia';
+import Wikipedia from '../utils/Wikipedia';
 
 const client = new Wikipedia();
 
