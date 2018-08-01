@@ -7,11 +7,13 @@ VOICETEXT_TOKEN=and your voicetext's token here
 ```
 
 ## Features
-| Command     | Discription                                      |
-| :---------- | :----------------------------------------------- |
-| `/wiki foo` | Search `foo` in Wikipedia                        |
-| `/join`     | Join voice channel which you currently joined in |
-| `/leave`    | Leave from voice channel                         |
+| Command               | Discription                                      |
+| :-------------------- | :----------------------------------------------- |
+| `@mention wiki foo`   | Search `foo` in Wikipedia                        |
+| `@mention join`       | Join voice channel which you currently joined in |
+| `@mention leave`      | Leave from voice channel                         |
+| After `@mention join` | Bot reads message you sent in your voice chat    |
+| Always                | Detect your haiku                                |
 
 ## Requirements
 - ffmpeg
