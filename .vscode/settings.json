@@ -1,0 +1,11 @@
+{
+  "editor.insertSpaces": false,
+  "editor.tabSize": 2,
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "tslint.enable": true,
+  "tslint.packageManager": "yarn",
+  "npm.packageManager": "yarn"
+}
