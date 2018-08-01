@@ -10,7 +10,7 @@ export async function haiku (message: Discord.Message, next: () => void) {
 
 
   if (haiku) {
-    message.reply(verticalize(`
+    message.reply('\n' + verticalize(`
 ${haiku[0]}
 　　${haiku[1]}
 　　　　${haiku[2]}
