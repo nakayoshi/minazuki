@@ -20,6 +20,10 @@
       "problemMatcher": [
         "$tsc"
       ],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+      },
       "group": {
         "kind": "build",
         "isDefault": true
