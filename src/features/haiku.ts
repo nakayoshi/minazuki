@@ -8,8 +8,7 @@ export async function haiku (message: Discord.Message, next: () => void) {
   const basho = new MatsuoBasho([5, 7, 5], dict);
   const haiku = await basho.findHaiku(message.content);
 
-
-  if (haiku) {
+  if (haiku.length !== 0) {
     message.reply('\n' + verticalize(`
 ${haiku[0]}
 　　${haiku[1]}

@@ -89,7 +89,7 @@ export default class MatsuoBasho {
     let index     = 0;
     let lastIndex = 0;
 
-    while (true) {
+    while (tokens[index]) {
       const reset = yield tokens[index];
 
       if (reset) {
@@ -152,8 +152,8 @@ export default class MatsuoBasho {
     let surfaces  = '';
     let position  = 0;
 
-    while (true) {
-      const { value: token, done} = tokens.next();
+    while (syllables < rule) {
+      const { value: token, done } = tokens.next();
 
       if (done) {
         return null;
@@ -170,11 +170,13 @@ export default class MatsuoBasho {
         surfaces  += analyzedToken.surface;
         position++;
       }
-
-      if (syllables === rule) {
-        return surfaces;
-      }
     }
+
+    if (syllables === rule) {
+      return surfaces;
+    }
+
+    return null;
   }
 
   /**
@@ -182,7 +184,7 @@ export default class MatsuoBasho {
    * @param text Sentence to find
    * @return Haiku splited by rules
    */
-  public findHaiku (text: string): Promise<string[]|null> {
+  public findHaiku (text: string): Promise<string[]> {
     let matches: string[] = [];
     text = text.replace(this.ignoreSymbols, '');
 
@@ -202,14 +204,22 @@ export default class MatsuoBasho {
           if (!mora) {
             matches  = [];
             position = 0;
-            tokens.next(true);
+            const { done } = tokens.next(true);
+
+            if (done) {
+              break;
+            }
           } else {
             matches.push(mora);
             position++;
           }
         }
 
-        resolve(matches);
+        if (matches.length === this.rules.length) {
+          resolve(matches);
+        } else {
+          resolve([]);
+        }
       });
     });
   }
