@@ -127,14 +127,6 @@ export default class MatsuoBasho {
         && syllables + this.countSyllables(reading) === rule
         && !this.canBeFooter(token)
     ) {
-      console.log(`----
-      ${token.surface_form}
-      Readlingless?:   ${!reading}
-      Excess?:         ${rule} < ${syllables} + ${this.countSyllables(reading || '')}
-      Can't be header? ${positionInMora === 0 && !this.canBeHeader(token)}
-      Can't be footer? ${positionInHaiku + 1 === this.rules.length && syllables + this.countSyllables(reading || '') === rule && !this.canBeFooter(token)}
-      `);
-
       return { continue: false, syllables: 0, surface: '' };
     }
 
