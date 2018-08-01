@@ -1,7 +1,10 @@
 import * as Discord from 'discord.js';
 import config from './config';
-import './features';
-import middleware from './middleware';
+import { haiku } from './features/haiku';
+import { controlVoiceConnections, voiceChat } from './features/voiceChat';
+import { wikipedia } from './features/wikipedia';
+import Middleware from './middleware';
+
 
 if ( !config.discordToken || !config.discordToken) {
   process.exit(1);
@@ -13,11 +16,18 @@ class MinazukiBot {
 
   /** Instance of the client */
   protected client = new Discord.Client();
+  protected middleware = new Middleware();
 
   constructor () {
     this.client.login(config.discordToken);
+
     this.client.on('ready', this.onReady);
     this.client.on('message', this.onMessage);
+
+    this.middleware.use(wikipedia);
+    this.middleware.use(controlVoiceConnections);
+    this.middleware.use(voiceChat);
+    this.middleware.use(haiku);
   }
 
   protected onReady = () => {
@@ -26,7 +36,7 @@ class MinazukiBot {
   }
 
   protected onMessage = (message: Discord.Message) => {
-    middleware.run(message);
+    this.middleware.handle(message);
   }
 }
 

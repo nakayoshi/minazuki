@@ -1,55 +1,42 @@
 import * as Discord from 'discord.js';
 
-export type QueueType = (message: Discord.Message, next: () => void) => void;
+export type MiddelwareType = (message: Discord.Message, next: (...args: any[]) => any) => any;
+export type WrappedMiddlewareType = (message: Discord.Message) => MiddelwareType;
 
-export class Middleware {
-
-  /** Array of middlewares */
-  protected queue: QueueType[] = [];
+export default class Middleware {
+  protected middlewares: WrappedMiddlewareType[] = [];
 
   /**
-   * Generate array of middleware from `this.queue`
-   * @param message Message which revieced
-   * @yield Result of the middleware
+   * Append middleware
+   * @param middleware Function to append as middleware
    */
-  protected generator (message: Discord.Message): (() => void)[] {
-    // Get current and next middleware from queue
-    // And wrap the next recursiviely
-    const makeNext = (prevIndex: number): () => void => {
-      const currentIndex = prevIndex + 1;
-      const current      = this.queue[currentIndex];
-      const nextIndex    = currentIndex + 1;
-      const next         = this.queue[nextIndex];
+  public use (middleware: MiddelwareType) {
+    const index = this.middlewares.length;
 
-      if (this.queue.length < currentIndex + 1) {
-        return () => {/* End of the queue*/};
-      }
-
-      return () => current(message, () => next(message, makeNext(nextIndex)));
+    const wrappedMiddleware = (message: Discord.Message) => {
+      return middleware(message, () => this.next(index, message));
     };
 
-    return this.queue.map((current, index) => () => {
-      current(message, makeNext(index));
-    });
+    this.middlewares = this.middlewares.concat(wrappedMiddleware);
   }
 
   /**
-   * Appending a new middleware to the queue
-   * @param middlewares Function processes message
-   */
-  public append (...middlewares: QueueType[]): void {
-    this.queue.push(...middlewares);
-  }
-
-  /**
-   * Excute the first middleware of queue
+   * Call the next middleware of specified index
+   * @param index Current index
    * @param message Message which recieved
    */
-  public run (message: Discord.Message): void {
-    const sequence = this.generator(message);
-    const next     = sequence[0];
-    next();
+  protected next (index: number, message: Discord.Message) {
+    if (index + 1 < this.middlewares.length) {
+      this.middlewares[index + 1](message);
+      return;
+    }
+  }
+
+  /**
+   * Start chain responsibility
+   * @param message Message which recieved
+   */
+  public handle (message: Discord.Message): void {
+    this.middlewares[0](message);
   }
 }
-
-export default new Middleware();
