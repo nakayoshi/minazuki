@@ -7,8 +7,7 @@ describe('Wikipedia', () => {
 
     // The serach result is mutable...
     const result     = await wikipedia.search(query);
-    const resultJson = JSON.stringify(result);
 
-    expect(resultJson).toMatchSnapshot();
+    expect(result).not.toBeFalsy();
   });
 });
