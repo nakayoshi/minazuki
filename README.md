@@ -1,4 +1,7 @@
 # minazuki-bot-discord
+[![Build Status](https://travis-ci.com/neet/minazuki.svg?branch=master)](https://travis-ci.com/neet/minazuki)
+[![Maintainability](https://api.codeclimate.com/v1/badges/1c8141f59838e0b327ac/maintainability)](https://codeclimate.com/github/neet/minazuki/maintainability)
+
 ## Deployment
 Edit `.env` to pass environment variable.
 ```env
