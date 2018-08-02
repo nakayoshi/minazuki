@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "test": "jest --coverage --config=jest.config.json",
+    "test:update": "yarn run test -- -u",
     "lint": "tslint -c tslint.yml 'src/**/*.{ts,tsx}' --exclude 'src/**/*.d.ts'",
     "build": "tsc",
     "start": "yarn run build && forever start ./es/main.js",
