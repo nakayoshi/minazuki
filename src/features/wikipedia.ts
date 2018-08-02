@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import c from '../utils/generateCommandRegexp';
+import minazukiBot from '../main';
 import Wikipedia from '../utils/Wikipedia';
 
 const client = new Wikipedia();
@@ -12,12 +12,12 @@ const client = new Wikipedia();
 export async function wikipedia (message: Discord.Message, next: () => void): Promise<any> {
   const { content } = message;
 
-  if (message.author.bot) {
+  if (message.author.bot && !message.isMentioned(minazukiBot.client.user)) {
     return;
   }
 
-  if (c('wiki').test(content)) {
-    const result = content.match(c('wiki\\s?(.+?)$'));
+  if (/wiki/.test(content)) {
+    const result = content.match(/wiki\s?(.+?)$/);
 
     if ( !result ) {
       return message.reply('キーワードを指定してくだせー');
@@ -36,8 +36,8 @@ export async function wikipedia (message: Discord.Message, next: () => void): Pr
 
     message.reply(`
 ${summary}
-https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}
-`);
+https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
+
   } else {
     next();
   }

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import config from '../config';
-import c from '../utils/generateCommandRegexp';
+import minazukiBot from '../main';
 import validateVoiceChat from '../utils/validateVoiceChat';
 import VoiceText from '../utils/VoiceText';
 
@@ -39,11 +39,11 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
   const channelId = message.channel.id;
   const { content, member } = message;
 
-  if (message.author.bot) {
+  if (message.author.bot && !message.isMentioned(minazukiBot.client.user)) {
     return;
   }
 
-  if (c('join').test(content) && member) {
+  if (/join/.test(content) && member) {
     if (!member.voiceChannel) {
       await message.reply('発言者がボイスチャットに参加している場合のみ参加可能です');
     } else {
@@ -51,7 +51,7 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
       await message.reply('ボイスチャットに参加しました');
     }
 
-  } else if (c('leave').test(content) && member && member.voiceChannel) {
+  } else if (/leave/.test(content) && member && member.voiceChannel) {
     if (!member.voiceChannel) {
       await message.reply('発言者がボイスチャットに参加している場合のみ退出可能です');
     } else {
