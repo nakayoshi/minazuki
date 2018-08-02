@@ -11,12 +11,6 @@ if ( !config.discordToken || !config.discordToken) {
 }
 
 class MinazukiBot {
-  /** Prefix for commands */
-  public prefix: string = '';
-
-  /** Instance of the client */
-  protected client = new Discord.Client();
-  protected middleware = new Middleware();
 
   constructor () {
     this.client.login(config.discordToken);
@@ -30,9 +24,11 @@ class MinazukiBot {
     this.middleware.use(haiku);
   }
 
+  public client = new Discord.Client();
+  public middleware = new Middleware();
+
   protected onReady = () => {
     console.log(`Logged in as ${this.client.user.tag}!`);
-    this.prefix = `<@${this.client.user.id}>`;
   }
 
   protected onMessage = (message: Discord.Message) => {
