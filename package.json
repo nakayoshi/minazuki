@@ -5,9 +5,8 @@
   "main": "./es/main.js",
   "license": "MIT",
   "scripts": {
-    "test": "yarn run test:jest && yarn run test:lint",
-    "test:jest": "jest --coverage --config=jest.config.json",
-    "test:lint": "tslint -c tslint.yml 'src/**/*.{ts,tsx}' --exclude 'src/**/*.d.ts'",
+    "test": "jest --coverage --config=jest.config.json",
+    "lint": "tslint -c tslint.yml 'src/**/*.{ts,tsx}' --exclude 'src/**/*.d.ts'",
     "build": "tsc",
     "start": "yarn run build && forever start ./es/main.js",
     "stop": "forever stop ./es/main.js",
