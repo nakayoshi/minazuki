@@ -13,7 +13,7 @@ export async function wikipedia (message: Discord.Message, next: () => void): Pr
   const { content } = message;
 
   if (message.author.bot || !message.isMentioned(minazukiBot.client.user)) {
-    return;
+    return next();
   }
 
   if (/wiki/.test(content)) {
@@ -38,7 +38,7 @@ export async function wikipedia (message: Discord.Message, next: () => void): Pr
 ${summary}
 https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
 
-  } else {
-    next();
   }
+
+  return next();
 }

@@ -13,9 +13,8 @@ export async function haiku (message: Discord.Message, next: () => void) {
 ${haiku[0]}
 　　${haiku[1]}
 　　　　${haiku[2]}
-　　　　　　　${message.author.username}
-`));
-  } else {
-    next();
+　　　　　　　${message.author.username}`));
   }
+
+  return next();
 }

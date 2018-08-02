@@ -13,7 +13,7 @@ const connections: { [key: string]: Discord.VoiceConnection } = {};
  * @param next The next middleware
  */
 export async function voiceChat (message: Discord.Message, next: () => void) {
-  const channelId  = message.channel.id;
+  const channelId = message.channel.id;
 
   if (connections[channelId]) {
     const connection       = connections[channelId];
@@ -27,7 +27,7 @@ export async function voiceChat (message: Discord.Message, next: () => void) {
     }
   }
 
-  next();
+  return next();
 }
 
 /**
@@ -40,7 +40,7 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
   const { content, member } = message;
 
   if (message.author.bot || !message.isMentioned(minazukiBot.client.user)) {
-    return;
+    return next();
   }
 
   if (/join/.test(content) && member) {
@@ -60,7 +60,7 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
       await message.reply('ボイスチャットから退出しました');
     }
 
-  } else {
-    next();
   }
+
+  return next();
 }
