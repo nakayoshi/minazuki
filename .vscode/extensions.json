@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "EditorConfig.editorconfig",
+    "eg2.tslint",
+    "Orta.vscode-jest"
+  ]
+}
