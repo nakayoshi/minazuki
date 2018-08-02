@@ -114,6 +114,10 @@ export default class MatsuoBasho {
       ? token.surface_form
       : token.pronunciation;
 
+    if (this.isSpace(token) || token.surface_form === '、') {
+      return { continue: true, syllables: 0, surface: '' };
+    }
+
     if (
       // Readingless word
       !reading
@@ -128,10 +132,6 @@ export default class MatsuoBasho {
         && !this.canBeFooter(token)
     ) {
       return { continue: false, syllables: 0, surface: '' };
-    }
-
-    if (this.isSpace(token) || token.surface_form === '、') {
-      return { continue: true, syllables: 0, surface: '' };
     }
 
     return {
