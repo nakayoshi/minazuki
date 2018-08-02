@@ -2,7 +2,7 @@ import WikiJS from 'wikijs';
 
 export default class Wikipedia  {
 
-  protected cleint = WikiJS({
+  protected client = WikiJS({
     apiUrl: 'https://ja.wikipedia.org/w/api.php',
   });
 
@@ -13,13 +13,13 @@ export default class Wikipedia  {
    */
   public async search (keyword: string): Promise<any> {
     try {
-      const { results } = await this.cleint.search(keyword);
+      const { results } = await this.client.search(keyword);
 
       if (!results.length) {
         return null;
       }
 
-      const page = await this.cleint.page(results[0]);
+      const page = await this.client.page(results[0]);
 
       return page;
 
