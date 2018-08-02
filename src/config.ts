@@ -1,12 +1,8 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-const dotenvFile = process.env.NODE_ENV === 'test'
-  ? '.env'
-  : '.env.test';
-
 dotenv.config({
-  path: path.resolve(__dirname, '..', dotenvFile),
+  path: path.resolve(__dirname, '..', '.env'),
 });
 
 export default {
