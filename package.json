@@ -5,6 +5,9 @@
   "main": "./es/main.js",
   "license": "MIT",
   "scripts": {
+    "test": "yarn run test:jest && yarn run test:lint",
+    "test:jest": "jest --coverage --config=jest.config.json",
+    "test:lint": "tslint -c tslint.yml 'src/**/*.{ts,tsx}'",
     "build": "tsc",
     "start": "yarn run build && forever start ./es/main.js",
     "stop": "forever stop ./es/main.js",
@@ -16,20 +19,23 @@
   "dependencies": {
     "@types/dotenv": "^4.0.3",
     "@types/form-data": "^2.2.1",
-    "@types/node": "^10.5.4",
-    "@types/node-fetch": "^1.6.9",
-    "@types/query-string": "^5.1.0",
+    "@types/jest": "^23.3.1",
+    "@types/node": "^10.5.5",
+    "@types/node-fetch": "^2.1.2",
+    "@types/query-string": "^6.1.0",
     "@types/tmp": "^0.0.33",
     "discord.js": "^11.3.2",
-    "dotenv": "^5.0.1",
+    "dotenv": "^6.0.0",
     "forever": "^0.15.3",
+    "jest": "^23.4.2",
     "kuromoji": "^0.1.2",
-    "node-fetch": "^2.1.2",
+    "node-fetch": "^2.2.0",
     "node-opus": "^0.3.0",
     "query-string": "^6.1.0",
     "tmp": "^0.0.33",
+    "ts-jest": "^23.0.1",
     "tslint": "^5.11.0",
-    "typescript": "^2.8.3",
-    "wikijs": "^4.7.0"
+    "typescript": "^3.0.1",
+    "wikijs": "^4.8.1"
   }
 }
