@@ -1,5 +1,5 @@
 {
-  "name": "minazuki-bot-discord",
+  "name": "minazuki",
   "version": "1.0.0",
   "private": true,
   "main": "./es/main.js",
