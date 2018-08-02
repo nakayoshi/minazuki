@@ -7,7 +7,8 @@ import Middleware from './middleware';
 
 
 if ( !config.discordToken || !config.discordToken) {
-  console.error('Your Discord API token was not specified. Open `.env` file to modify it');
+  console.error('Your Discord/VoiceText API token was not specified. Open `.env` file to modify it');
+  throw Error('Invalid token');
   process.exit(1);
 }
 
