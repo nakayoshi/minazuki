@@ -39,7 +39,7 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
   const channelId = message.channel.id;
   const { content, member } = message;
 
-  if (message.author.bot && !message.isMentioned(minazukiBot.client.user)) {
+  if (message.author.bot || !message.isMentioned(minazukiBot.client.user)) {
     return;
   }
 

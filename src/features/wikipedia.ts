@@ -12,7 +12,7 @@ const client = new Wikipedia();
 export async function wikipedia (message: Discord.Message, next: () => void): Promise<any> {
   const { content } = message;
 
-  if (message.author.bot && !message.isMentioned(minazukiBot.client.user)) {
+  if (message.author.bot || !message.isMentioned(minazukiBot.client.user)) {
     return;
   }
 
