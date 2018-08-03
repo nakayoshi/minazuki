@@ -5,13 +5,13 @@ describe('validateVoiceChat', () => {
     const text   = '<@123456789>';
     const result = validateVoiceChat(text);
 
-    expect(result).toBe('めんしょん。');
+    expect(result).toBe('メンション');
   });
 
   it ('validates URL to suitable form for voice chat', () => {
     const text   = 'https://www.google.com/';
     const result = validateVoiceChat(text);
 
-    expect(result).toBe('ゆーあーるえる。');
+    expect(result).toBe('ユーアールエル');
   });
 });
