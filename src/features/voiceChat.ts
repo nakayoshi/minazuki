@@ -60,7 +60,7 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
       await message.reply('ボイスチャットから退出しました');
     }
 
+  } else {
+    return next();
   }
-
-  return next();
 }

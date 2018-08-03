@@ -38,7 +38,7 @@ export async function wikipedia (message: Discord.Message, next: () => void): Pr
 ${summary}
 https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
 
+  } else {
+    return next();
   }
-
-  return next();
 }

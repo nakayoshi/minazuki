@@ -14,7 +14,7 @@ ${haiku[0]}
 　　${haiku[1]}
 　　　　${haiku[2]}
 　　　　　　　${message.author.username}`));
+  } else {
+    return next();
   }
-
-  return next();
 }
