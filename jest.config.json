@@ -4,6 +4,10 @@
   },
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "testEnvironment": "node",
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "<rootDir>/es/"
+  ],
   "moduleFileExtensions": [
     "ts",
     "tsx",
