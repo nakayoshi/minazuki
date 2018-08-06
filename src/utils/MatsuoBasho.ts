@@ -18,6 +18,7 @@ export default class MatsuoBasho {
   protected ignoreSymbols  = /[\[\]「」『』]/g;
   protected voicelessChars = /[ァィゥェォャュョ]/g;
   protected kana           = /[ァ-タダ-ヶ]/g;
+  protected notKana        = /[^ァ-タダ-ヶ]/g;
 
   /**
    * @param rules Array of number which represents rule for the haiku, like [5, 7, 5]
@@ -34,7 +35,10 @@ export default class MatsuoBasho {
    * @return The result
    */
   protected countSyllables (string: string): number {
-    return string.replace(this.voicelessChars, '').length;
+    return string
+      .replace(this.voicelessChars, '')
+      .replace(this.notKana,        '')
+      .length;
   }
 
   /**
