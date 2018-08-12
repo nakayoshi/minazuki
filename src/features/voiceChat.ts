@@ -4,8 +4,8 @@ import minazukiBot from '../main';
 import validateVoiceChat from '../utils/validateVoiceChat';
 import VoiceText from '../utils/VoiceText';
 
-const client = new VoiceText(config.voiceTextToken);
-const connections: { [key: string]: Discord.VoiceConnection } = {};
+const client      = new VoiceText(config.voiceTextToken);
+const connections = new Map<string, Discord.VoiceConnection>();
 
 /**
  * Play audio of validated content
@@ -13,18 +13,19 @@ const connections: { [key: string]: Discord.VoiceConnection } = {};
  * @param next The next middleware
  */
 export async function voiceChat (message: Discord.Message, next: () => void) {
-  const channelId = message.channel.id;
+  const channelId  = message.channel.id;
+  const connection = connections.get(channelId);
 
-  if (connections[channelId]) {
-    const connection       = connections[channelId];
+  if (!connection) {
+    return next();
+  }
+
+  try {
     const validatedContent = validateVoiceChat(message.content);
-
-    try {
-      const audioPath = await client.speak(validatedContent);
-      connection.playFile(audioPath);
-    } catch {
-      // VoiceText's error, ignored
-    }
+    const audioFilePath    = await client.speak(validatedContent);
+    connection.playFile(audioFilePath);
+  } catch {
+    // VoiceText's error, ignored
   }
 
   return next();
@@ -47,7 +48,8 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
     if (!member.voiceChannel) {
       await message.reply('発言者がボイスチャットに参加している場合のみ参加可能です');
     } else {
-      connections[channelId] = await member.voiceChannel.join();
+      const connection = await member.voiceChannel.join();
+      connections.set(channelId, connection);
       await message.reply('ボイスチャットに参加しました');
     }
 
@@ -56,7 +58,7 @@ export async function controlVoiceConnections (message: Discord.Message, next: (
       await message.reply('発言者がボイスチャットに参加している場合のみ退出可能です');
     } else {
       await member.voiceChannel.leave();
-      delete connections[channelId];
+      connections.delete(channelId);
       await message.reply('ボイスチャットから退出しました');
     }
 
