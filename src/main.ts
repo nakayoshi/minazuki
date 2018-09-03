@@ -22,8 +22,8 @@ class MinazukiBot {
     this.middleware.use(wikipedia);
     this.middleware.use(controlVoiceConnections);
     this.middleware.use(voiceChat);
-    this.middleware.use(haiku);
     this.middleware.use(tanka);
+    this.middleware.use(haiku);
   }
 
   public client = new Discord.Client();
