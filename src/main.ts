@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import config from './config';
-import { haiku } from './features/haiku';
+import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voiceChat';
 import { wikipedia } from './features/wikipedia';
 import Middleware from './middleware';
@@ -23,6 +23,7 @@ class MinazukiBot {
     this.middleware.use(controlVoiceConnections);
     this.middleware.use(voiceChat);
     this.middleware.use(haiku);
+    this.middleware.use(tanka);
   }
 
   public client = new Discord.Client();
