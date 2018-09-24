@@ -1,5 +1,10 @@
+/**
+ * Common validation and transformation for voice chat script
+ * @param content content to validate
+ * @return validated content
+ */
 export default function validateVoiceChat (content: string): string {
-  const otakuDict = [
+  const dict = [
     {
       regexp: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g,
       reading: 'ユーアールエル',
@@ -16,7 +21,7 @@ export default function validateVoiceChat (content: string): string {
 
   let validatedContent = content;
 
-  otakuDict.forEach((item) => {
+  dict.forEach((item) => {
     validatedContent = validatedContent.replace(item.regexp, item.reading);
   });
 
