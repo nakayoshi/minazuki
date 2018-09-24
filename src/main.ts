@@ -6,7 +6,7 @@ import { wikipedia } from './features/wikipedia';
 import Middleware from './middleware';
 
 
-if ( !config.discordToken || !config.discordToken) {
+if ( !config.discordToken || !config.voiceTextToken) {
   console.error('Your Discord/VoiceText API token was not specified. Open `.env` file to modify it');
   throw Error('Invalid token');
 }
