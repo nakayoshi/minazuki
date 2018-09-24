@@ -1,7 +1,7 @@
 const verticalAndHorizontalCharactorMap: { targets: string[], vertical: string }[] = [
   {
-    targets: ['｜'],
-    vertical: 'ー',
+    targets: ['ー'],
+    vertical: '｜',
   },
   {
     targets: ['（', '('],
