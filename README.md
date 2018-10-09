@@ -17,21 +17,25 @@ First, install dependencies with yarn
 yarn
 ```
 
-Edit `.env` to pass environment variable.
+Then edit `.env` to set environment variables.
 ```env
 DISCORD_TOKEN=your discord api token here
 VOICETEXT_TOKEN=and your voicetext's token here
 ```
 
-Run the following command on your shell:
+Then using [Forever](https://www.npmjs.com/package/forever) which puts Node.js job on background to run bot as a daemon.
 ```
 yarn run start
 ```
 
-Forever puts bot's job to background, so you can run following command to stop the bot.
-
+Using following command to kill the bot
 ```
 yarn run stop
+```
+
+Alternatively, you could use [Foreman](http://ddollar.github.io/foreman/) which does exact same thing.
+```
+foreman start
 ```
 
 ## Requirements
