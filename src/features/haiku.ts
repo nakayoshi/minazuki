@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as path from 'path';
 import MatsuoBasho from '../utils/MatsuoBasho';
-import verticalize from '../utils/verticalize';
 
 export async function haiku (message: Discord.Message, next: () => void) {
   if (message.author.bot) {
@@ -13,11 +12,11 @@ export async function haiku (message: Discord.Message, next: () => void) {
   const haiku = await basho.findHaiku(message.content);
 
   if (haiku.length !== 0) {
-    message.reply('\n' + verticalize(`
-${haiku[0]}
-　　${haiku[1]}
-　　　　${haiku[2]}
-　　　　　　　${message.author.username}`));
+    message.reply(`
+*${haiku[0]}*
+　　*${haiku[1]}*
+　　　　*${haiku[2]}*
+　　　　　　　── ***${message.author.username}***`);
   } else {
     return next();
   }
@@ -33,13 +32,13 @@ export async function tanka (message: Discord.Message, next: () => void) {
   const tanka = await basho.findHaiku(message.content);
 
   if (tanka.length !== 0) {
-    message.reply('\n' + verticalize(`
-${tanka[0]}
-　　${tanka[1]}
-　　　　${tanka[2]}
-　　　　　　${tanka[3]}
-　　　　　　　　${tanka[4]}
-　　　　　　　　　　　${message.author.username}`));
+    message.reply(`
+*${tanka[0]}*
+　　*${tanka[1]}*
+　　　　*${tanka[2]}*
+　　　　　　*${tanka[3]}*
+　　　　　　　　*${tanka[4]}*
+　　　　　　　　　　　── ***${message.author.username}***`);
   } else {
     return next();
   }
