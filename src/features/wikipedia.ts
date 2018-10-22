@@ -10,9 +10,9 @@ const client = new Wikipedia();
  * @param next The next middleware
  */
 export async function wikipedia (message: Discord.Message, next: () => void): Promise<any> {
-  const { content, reply, isMentioned, author } = message;
+  const { content, reply, author } = message;
 
-  if (author.bot || !isMentioned(minazukiBot.client.user)) {
+  if (author.bot || !message.isMentioned(minazukiBot.client.user)) {
     return next();
   }
 
