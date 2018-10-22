@@ -1,5 +1,5 @@
 import * as Discrod from 'discord.js';
-import Middleware from '../middleware';
+import { Middleware } from '../middleware';
 
 describe('Middleware', () => {
   it ('appends a middlewares to the list and kick them', () => {

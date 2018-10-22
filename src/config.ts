@@ -5,7 +5,7 @@ dotenv.config({
   path: path.resolve(__dirname, '..', '.env'),
 });
 
-export default {
+export const config = {
   /** Token for Discord */
   discordToken: process.env.DISCORD_TOKEN as string,
 

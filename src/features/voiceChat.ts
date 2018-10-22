@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import config from '../config';
+import { config } from '../config';
 import minazukiBot from '../main';
 import validateVoiceChat from '../utils/validateVoiceChat';
 import VoiceText from '../utils/VoiceText';

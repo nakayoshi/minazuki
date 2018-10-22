@@ -3,7 +3,7 @@ import * as Discord from 'discord.js';
 export type MiddelwareType = (message: Discord.Message, next: (...args: any[]) => any) => any;
 export type WrappedMiddlewareType = (message: Discord.Message) => MiddelwareType;
 
-export default class Middleware {
+export class Middleware {
   protected middlewares: WrappedMiddlewareType[] = [];
 
   /**

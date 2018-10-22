@@ -220,11 +220,7 @@ export default class MatsuoBasho {
           }
         }
 
-        if (matches.length === this.rules.length) {
-          resolve(matches);
-        } else {
-          resolve([]);
-        }
+        resolve(matches.length === this.rules.length ? matches : []);
       });
     });
   }
