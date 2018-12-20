@@ -4,7 +4,6 @@ import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voiceChat';
 import { wikipedia, wikipediaFizzyKeyword } from './features/wikipedia';
 import { Middleware } from './middleware';
-import { streamTweet } from './workers/streamTweet';
 
 if ( !config.discordToken || !config.voiceTextToken) {
   throw Error('API token is not specified. Open `.env` file to modify it');
@@ -31,7 +30,6 @@ class MinazukiBot {
 
   protected onReady = () => {
     console.log(`Logged in as ${this.client.user.tag}!`);
-    streamTweet();
   }
 
   protected onMessage = (message: Discord.Message) => {
