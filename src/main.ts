@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { config } from './config';
 import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voiceChat';
-import { wikipedia, wikipediaFizzyKeyword } from './features/wikipedia';
+import { wikipedia, wikipediaFuzzyKeyword } from './features/wikipedia';
 import { Middleware } from './middleware';
 
 if ( !config.discordToken || !config.voiceTextToken) {
@@ -21,7 +21,7 @@ class MinazukiBot {
     this.client.on('message', this.onMessage);
 
     this.middleware.use(wikipedia);
-    this.middleware.use(wikipediaFizzyKeyword);
+    this.middleware.use(wikipediaFuzzyKeyword);
     this.middleware.use(controlVoiceConnections);
     this.middleware.use(voiceChat);
     this.middleware.use(tanka);

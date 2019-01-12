@@ -48,7 +48,7 @@ https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
  * @param message Message recieved
  * @param next The next middleware
  */
-export async function wikipediaFizzyKeyword (message: Discord.Message, next: () => void): Promise<any> {
+export async function wikipediaFuzzyKeyword (message: Discord.Message, next: () => void): Promise<any> {
   const { content, author } = message;
 
   if (author.bot) {
