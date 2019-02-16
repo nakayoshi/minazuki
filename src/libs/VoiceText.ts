@@ -49,7 +49,8 @@ export class VoiceText {
       throw new Error('Fetching WAV failed');
     }
 
-    await fs.promises.writeFile(tmpFile, await response.buffer());
+    // tslint:disable-next-line non-literal-fs-path
+    await fs.writeFileSync(tmpFile, await response.buffer());
 
     return tmpFile;
   };

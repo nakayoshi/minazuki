@@ -24,8 +24,8 @@ export const voiceChat: Middleware = async (message, _, next) => {
     const validatedContent = validateVoiceChat(message.content);
     const audioFilePath = await client.speak(validatedContent);
     connection.playFile(audioFilePath);
-  } catch {
-    // VoiceText's error, ignored
+  } catch (e) {
+    console.warn(e);
   }
 
   return next();
