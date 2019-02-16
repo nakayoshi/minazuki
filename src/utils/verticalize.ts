@@ -1,4 +1,7 @@
-const verticalAndHorizontalCharactorMap: { targets: string[], vertical: string }[] = [
+const verticalAndHorizontalCharactorMap: {
+  targets: string[];
+  vertical: string;
+}[] = [
   {
     targets: ['ー'],
     vertical: '｜',
@@ -91,7 +94,9 @@ const verticalAndHorizontalCharactorMap: { targets: string[], vertical: string }
  * @return transformed text
  */
 export const transformLatinToFullWidth = (text: string) => {
-  return text.replace(/[A-Za-z0-9]/g, (text) => String.fromCharCode(text.charCodeAt(0) + 0xFEE0));
+  return text.replace(/[A-Za-z0-9]/g, tmpText =>
+    String.fromCharCode(tmpText.charCodeAt(0) + 0xfee0),
+  );
 };
 
 /**
@@ -100,13 +105,15 @@ export const transformLatinToFullWidth = (text: string) => {
  * @return transformed text
  */
 export const transformHorizontalToVerticalUnicode = (text: string) => {
+  let newText = text;
+
   verticalAndHorizontalCharactorMap.forEach(({ targets, vertical }) => {
-    targets.forEach((target) => {
-      text = text.replace(target, vertical);
+    targets.forEach(target => {
+      newText = newText.replace(target, vertical);
     });
   });
 
-  return text;
+  return newText;
 };
 
 /**
@@ -114,28 +121,36 @@ export const transformHorizontalToVerticalUnicode = (text: string) => {
  * @param text Target text to transform
  * @return Varticalized text
  */
-export default function verticalize (text: string): string {
-  const lines = text.trim().split('\n').map((line) => line.split('')).reverse();
+export function verticalize(text: string): string {
+  const lines = text
+    .trim()
+    .split('\n')
+    .map(line => line.split(''))
+    .reverse();
   const whiteSpace = '　';
   let verticalizedText = '';
   let index = 0;
 
   while (true) {
-    const charAtLine = lines.map((line) => line[index] ? line[index] : whiteSpace);
+    const charAtLine = lines.map(line =>
+      line[index] ? line[index] : whiteSpace,
+    );
 
     if (charAtLine.join('') === whiteSpace.repeat(lines.length)) {
       break;
     }
 
-    verticalizedText += charAtLine.join('') + '\n';
-    index++;
+    verticalizedText += `${charAtLine.join('')}\n`;
+    index += 1;
   }
 
   // Avoid trimming
-  verticalizedText = verticalizedText.replace(/^\s+?/, '.' + whiteSpace);
+  verticalizedText = verticalizedText.replace(/^\s+?/, `.${whiteSpace}`);
 
   // Transforming to appropriate unicodes
-  verticalizedText = transformHorizontalToVerticalUnicode(transformLatinToFullWidth(verticalizedText));
+  verticalizedText = transformHorizontalToVerticalUnicode(
+    transformLatinToFullWidth(verticalizedText),
+  );
 
   return verticalizedText;
 }

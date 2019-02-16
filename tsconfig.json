@@ -4,25 +4,26 @@
     "module": "commonjs",
     "sourceMap": true,
     "outDir": "./es",
-    "baseUrl": "./",
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["src/*"],
+    },
     "lib": [
-      "es7",
+      "es2017",
       "dom"
     ],
-    "moduleResolution": "node",
-    "declaration": false,
     "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strict": true,
+    "pretty": true,
     "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "removeComments": false,
-    "pretty": true
+    "strict": true,
   },
   "include": [
     "src/**/*"

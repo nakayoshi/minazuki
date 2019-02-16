@@ -3,7 +3,7 @@ declare namespace Kuromoji {
     /** 辞書内での単語ID */
     word_id: number;
     /** 単語タイプ(辞書に登録されている単語ならKNOWN, 未知語ならUNKNOWN) */
-    word_type: 'KNOWN'|'UNKNOWN';
+    word_type: 'KNOWN' | 'UNKNOWN';
     /** 単語の開始位置 */
     word_position: number;
     /** 表層形 */
@@ -33,8 +33,7 @@ declare namespace Kuromoji {
     dicPath: string;
   }
 
-  declare function builder (option: TokenizerBuilderOption): TokenizerBuilder;
-
+  declare function builder(option: TokenizerBuilderOption): TokenizerBuilder;
 
   /**
    * Tokenizer
@@ -45,30 +44,29 @@ declare namespace Kuromoji {
      * @param input input Input text
      * @return Sentences end with punctuation
      */
-    public splitByPunctuation (input: string): string[] {};
+    public splitByPunctuation(input: string): string[] {}
 
     /**
      * Tokenize text
      * @param text text Input text to analyze
      * @return Tokens
      */
-    public tokenize (text: string): Token[] {};
+    public tokenize(text: string): Token[] {}
 
     /**
      *
      * @param sentence
      * @param tokens
      */
-    public tokenizeForSentence (sentence: string, tokens: Token[]): Token[] {};
+    public tokenizeForSentence(sentence: string, tokens: Token[]): Token[] {}
 
     /**
      * Build word lattice
      * @param text Input text to analyze
      * @return Word lattice
      */
-    public getLattice = function (text: string): any {};
+    public getLattice = function(text: string): any {};
   }
-
 
   /**
    * TokenizerBuilder create Tokenizer instance.
@@ -77,13 +75,13 @@ declare namespace Kuromoji {
     /**
      * @param option JSON object which have key-value pairs settings
      */
-    constructor (option: TokenizerBuilderOption);
+    constructor(option: TokenizerBuilderOption);
 
     /**
      * Build Tokenizer instance by asynchronous manner
      * @param callback Callback function
      */
-    public build (callback: (err: Error, tokenizer: Tokenizer) => void) {};
+    public build(callback: (err: Error, tokenizer: Tokenizer) => void) {}
   }
 }
 

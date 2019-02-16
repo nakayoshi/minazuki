@@ -1,45 +1,45 @@
-import * as Discord from 'discord.js';
 import * as path from 'path';
-import MatsuoBasho from '../utils/MatsuoBasho';
+import { MatsuoBasho } from 'src/libs/MatsuoBasho';
+import { Middleware } from 'src/libs/MiddlwareManager';
 
-export async function haiku (message: Discord.Message, next: () => void) {
+export const haiku: Middleware = async (message, _, next) => {
   if (message.author.bot) {
     return next();
   }
 
-  const dict  = path.join(__dirname, '../../node_modules/kuromoji/dict/');
+  const dict = path.join(__dirname, '../../node_modules/kuromoji/dict/');
   const basho = new MatsuoBasho([5, 7, 5], dict);
-  const haiku = await basho.findHaiku(message.content);
+  const match = await basho.findHaiku(message.content);
 
   if (haiku.length !== 0) {
     message.reply(`
-*${haiku[0]}*
-　　*${haiku[1]}*
-　　　　*${haiku[2]}*
+*${match[0]}*
+　　*${match[1]}*
+　　　　*${match[2]}*
 　　　　　　　── ***${message.author.username}***`);
   } else {
     return next();
   }
-}
+};
 
-export async function tanka (message: Discord.Message, next: () => void) {
+export const tanka: Middleware = async (message, _, next) => {
   if (message.author.bot) {
     return next();
   }
 
-  const dict  = path.join(__dirname, '../../node_modules/kuromoji/dict/');
+  const dict = path.join(__dirname, '../../node_modules/kuromoji/dict/');
   const basho = new MatsuoBasho([5, 7, 5, 7, 7], dict);
-  const tanka = await basho.findHaiku(message.content);
+  const match = await basho.findHaiku(message.content);
 
   if (tanka.length !== 0) {
     message.reply(`
-*${tanka[0]}*
-　　*${tanka[1]}*
-　　　　*${tanka[2]}*
-　　　　　　*${tanka[3]}*
-　　　　　　　　*${tanka[4]}*
+*${match[0]}*
+　　*${match[1]}*
+　　　　*${match[2]}*
+　　　　　　*${match[3]}*
+　　　　　　　　*${match[4]}*
 　　　　　　　　　　　── ***${message.author.username}***`);
   } else {
     return next();
   }
-}
+};

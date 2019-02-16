@@ -3,7 +3,7 @@
  * @param content content to validate
  * @return validated content
  */
-export default function validateVoiceChat (content: string): string {
+export function validateVoiceChat(content: string): string {
   const dict = [
     {
       regexp: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g,
@@ -21,7 +21,7 @@ export default function validateVoiceChat (content: string): string {
 
   let validatedContent = content;
 
-  dict.forEach((item) => {
+  dict.forEach(item => {
     validatedContent = validatedContent.replace(item.regexp, item.reading);
   });
 

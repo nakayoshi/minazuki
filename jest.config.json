@@ -8,6 +8,9 @@
     "/node_modules/",
     "<rootDir>/es/"
   ],
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/src/$1"
+  },
   "moduleFileExtensions": [
     "ts",
     "tsx",

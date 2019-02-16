@@ -1,14 +1,14 @@
-import verticalize from '../verticalize';
+import { verticalize } from 'src/utils/verticalize';
 
 describe('verticalize', () => {
-  it ('verticalizes latin text', () => {
+  it('verticalizes latin text', () => {
     const text = 'aaa\nbbb\nccc';
     const result = verticalize(text);
 
     expect(result).toEqual('ｃｂａ\nｃｂａ\nｃｂａ\n');
   });
 
-  it ('verticalizes specific unicode charactors', () => {
+  it('verticalizes specific unicode charactors', () => {
     const text = '彼は「あーあ」と言った';
     const result = verticalize(text);
 

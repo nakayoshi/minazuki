@@ -1,7 +1,6 @@
-import WikiJS from 'wikijs';
+import WikiJS, { Page } from 'wikijs';
 
-export default class Wikipedia  {
-
+export class Wikipedia {
   protected client = WikiJS({
     apiUrl: 'https://ja.wikipedia.org/w/api.php',
   });
@@ -11,7 +10,7 @@ export default class Wikipedia  {
    * @param keyword Query string
    * @return Result Page object, I wonder why WikiJS didn't export it
    */
-  public async search (keyword: string): Promise<any> {
+  public async search(keyword: string) {
     try {
       const { results } = await this.client.search(keyword);
 
@@ -19,10 +18,7 @@ export default class Wikipedia  {
         return null;
       }
 
-      const page = await this.client.page(results[0]);
-
-      return page;
-
+      return (await this.client.page(results[0])) as Page & { pageid: string };
     } catch (e) {
       return null;
     }
