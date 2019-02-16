@@ -9,48 +9,25 @@ export type Middleware = (
 
 export type WrappedMiddleware = (message: Discord.Message) => Middleware;
 
-export interface MiddlewareConfig {
-  handler: WrappedMiddleware;
-  priority: number;
-}
-
 export class MiddlewareManager {
-  protected middlewares: MiddlewareConfig[] = [];
+  protected middlewares: WrappedMiddleware[] = [];
   protected minazuki: Minazuki;
 
   constructor(minazuki: Minazuki) {
     this.minazuki = minazuki;
   }
 
-  private appendMiddleware(middlware: MiddlewareConfig) {
-    this.middlewares.push(middlware);
-
-    this.middlewares.sort((a, b) => {
-      if (a.priority > b.priority) {
-        return 0;
-      }
-
-      return 1;
-    });
-  }
-
   /**
    * Append middleware
    * @param middleware Function to append as middleware
    */
-  public use(middleware: Middleware, priority = 0) {
+  public use(middleware: Middleware) {
     const index = this.middlewares.length;
 
-    const wrappedMiddleware = (message: Discord.Message) => {
-      return middleware(message, this.minazuki, () =>
-        this.next(index, message),
-      );
-    };
+    const wrappedMiddleware = (message: Discord.Message) =>
+      middleware(message, this.minazuki, () => this.next(index, message));
 
-    this.appendMiddleware({
-      handler: wrappedMiddleware,
-      priority,
-    });
+    this.middlewares.push(wrappedMiddleware);
   }
 
   /**
@@ -60,7 +37,7 @@ export class MiddlewareManager {
    */
   protected next(index: number, message: Discord.Message) {
     if (index + 1 < this.middlewares.length) {
-      this.middlewares[index + 1].handler(message);
+      this.middlewares[index + 1](message);
 
       return;
     }
@@ -71,6 +48,6 @@ export class MiddlewareManager {
    * @param message Message which recieved
    */
   public handle(message: Discord.Message): void {
-    this.middlewares[0].handler(message);
+    this.middlewares[0](message);
   }
 }

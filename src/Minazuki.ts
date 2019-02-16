@@ -15,12 +15,12 @@ export class Minazuki {
     this.client.on('ready', this.onReady);
     this.client.on('message', this.onMessage);
 
-    this.middlewares.use(wikipedia, 0);
-    this.middlewares.use(wikipediaFuzzyKeyword, 0);
-    this.middlewares.use(controlVoiceConnections, 0);
-    this.middlewares.use(voiceChat, 0);
-    this.middlewares.use(tanka, 1);
-    this.middlewares.use(haiku, 1);
+    this.middlewares.use(wikipedia);
+    this.middlewares.use(wikipediaFuzzyKeyword);
+    this.middlewares.use(controlVoiceConnections);
+    this.middlewares.use(voiceChat);
+    this.middlewares.use(tanka);
+    this.middlewares.use(haiku);
   }
 
   protected onReady = () => {
