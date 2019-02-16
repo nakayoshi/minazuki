@@ -1,5 +1,5 @@
-import { Middleware } from 'src/libs/MiddlwareManager';
-import { Wikipedia } from 'src/libs/Wikipedia';
+import { Middleware } from '../libs/MiddlwareManager';
+import { Wikipedia } from '../libs/Wikipedia';
 
 const client = new Wikipedia();
 

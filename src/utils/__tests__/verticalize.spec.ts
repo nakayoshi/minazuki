@@ -1,4 +1,4 @@
-import { verticalize } from 'src/utils/verticalize';
+import { verticalize } from '../verticalize';
 
 describe('verticalize', () => {
   it('verticalizes latin text', () => {

@@ -1,4 +1,4 @@
-import { Wikipedia } from 'src/libs/Wikipedia';
+import { Wikipedia } from '../Wikipedia';
 
 describe('Wikipedia', () => {
   it('searches an article of wikipedia with specific keyword', async () => {

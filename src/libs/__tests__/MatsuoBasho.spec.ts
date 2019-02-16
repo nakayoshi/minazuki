@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { MatsuoBasho } from 'src/libs/MatsuoBasho';
+import { MatsuoBasho } from '../MatsuoBasho';
 
 describe('MatsuoBasho', () => {
   it('finds haiku from given sentence', async () => {

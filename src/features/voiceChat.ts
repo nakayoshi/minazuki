@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
-import { config } from 'src/config';
-import { Middleware } from 'src/libs/MiddlwareManager';
-import { VoiceText } from 'src/libs/VoiceText';
-import { validateVoiceChat } from 'src/utils/validateVoiceChat';
+import { config } from '../config';
+import { Middleware } from '../libs/MiddlwareManager';
+import { VoiceText } from '../libs/VoiceText';
+import { validateVoiceChat } from '../utils/validateVoiceChat';
 
 const client = new VoiceText(config.voiceTextToken);
 const connections = new Map<string, Discord.VoiceConnection>();

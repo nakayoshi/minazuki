@@ -15,7 +15,9 @@ branches:
     - master
 
 notifications:
-  email: true
+  email:
+    on_success: change
+    on_failure: always
 
 install:
   - yarn
@@ -25,4 +27,3 @@ before_script:
 
 script:
   - yarn run test
-  - yarn run lint

@@ -1,6 +1,6 @@
 import * as Discrod from 'discord.js';
-import { MiddlewareManager } from 'src/libs/MiddlwareManager';
-import { Minazuki } from 'src/Minazuki';
+import { MiddlewareManager } from '../libs/MiddlwareManager';
+import { Minazuki } from '../Minazuki';
 
 describe('Middleware', () => {
   it('appends a middlewares to the list and kick them', () => {

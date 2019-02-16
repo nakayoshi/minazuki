@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
-import { MiddlewareManager } from 'src/libs/MiddlwareManager';
 import { config } from './config';
 import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voiceChat';
 import { wikipedia, wikipediaFuzzyKeyword } from './features/wikipedia';
+import { MiddlewareManager } from './libs/MiddlwareManager';
 
 export class Minazuki {
   private middlewares = new MiddlewareManager(this);
