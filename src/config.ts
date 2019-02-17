@@ -12,8 +12,9 @@ export const config = {
   /** Token for VoiceText */
   voiceTextToken: process.env.VOICETEXT_TOKEN as string,
 
-  /** Token for Travis-ci.com */
+  /** Travis-ci.com */
   travisCIToken: process.env.TRAVIS_CI_TOKEN as string,
+  travisCIInterval: Number(process.env.TRAVIS_CI_INTERVAL),
 
   /** Token for Twitter */
   twitterConsumerKey: process.env.TWITTER_CONSUMER_KEY as string,

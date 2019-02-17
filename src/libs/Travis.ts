@@ -1,6 +1,8 @@
 import { PresenceStatusData } from 'discord.js';
 import fetch from 'node-fetch';
-import { Minazuki } from 'src/Minazuki';
+import { config } from '../config';
+import { Minazuki } from '../Minazuki';
+import { delay } from '../utils/delay';
 
 export type BuildState =
   | 'finished'
@@ -52,9 +54,10 @@ export interface Branch {
 export class TravisCI {
   private url = 'https://api.travis-ci.com';
   private repoId = '5566063';
-  private interval = 1000 * 30;
+  private token = config.travisCIToken;
+  private interval = config.travisCIInterval;
 
-  constructor(private token: string, private app: Minazuki) {}
+  constructor(private app: Minazuki) {}
 
   private async get<T>(url: string) {
     return fetch(url, {
@@ -105,9 +108,10 @@ export class TravisCI {
   }
 
   public async watchBuildStatus() {
-    setInterval(async () => {
+    while (true) {
       const branch = await this.fetchMasterBranch();
       await this.setBuildToPresence(branch);
-    }, this.interval);
+      await delay(this.interval);
+    }
   }
 }

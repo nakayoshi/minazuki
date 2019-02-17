@@ -8,7 +8,7 @@ import { TravisCI } from './libs/Travis';
 
 export class Minazuki {
   private middlewares = new MiddlewareManager(this);
-  private travisCI = new TravisCI(config.travisCIToken, this);
+  private travisCI = new TravisCI(this);
   public client = new Discord.Client();
 
   constructor() {
