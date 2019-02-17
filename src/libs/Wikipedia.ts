@@ -18,7 +18,9 @@ export class Wikipedia {
         return null;
       }
 
-      return (await this.client.page(results[0])) as Page & { pageid: string };
+      return (await this.client.page(results[0])) as Page & {
+        raw: { pageid: string };
+      };
     } catch (e) {
       return null;
     }

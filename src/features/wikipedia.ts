@@ -39,7 +39,7 @@ export const wikipedia: Middleware = async (message, app, next) => {
 
     message.reply(`
 ${summary}
-https://ja.wikipedia.org/wiki?curid=${page.pageid}`);
+https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
   } else {
     return next();
   }
@@ -76,5 +76,5 @@ export const wikipediaFuzzyKeyword: Middleware = async (message, _, next) => {
 
   message.reply(`
 ${summary}
-https://ja.wikipedia.org/wiki?curid=${page.pageid}`);
+https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
 };
