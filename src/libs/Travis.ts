@@ -10,7 +10,8 @@ export type BuildState =
   | 'failed'
   | 'errored'
   | 'canceled'
-  | 'started';
+  | 'started'
+  | 'created';
 
 export type EventType = 'push' | 'pull_request' | 'api' | 'cron';
 
@@ -79,6 +80,7 @@ export class TravisCI {
       case 'finished':
         return 'online';
 
+      case 'created':
       case 'started':
         return 'idle';
 
