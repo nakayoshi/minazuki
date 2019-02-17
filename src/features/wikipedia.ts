@@ -11,7 +11,11 @@ const client = new Wikipedia();
 export const wikipedia: Middleware = async (message, app, next) => {
   const { content, author } = message;
 
-  if (author.bot || !message.isMentioned(app.client.user)) {
+  if (
+    author.bot ||
+    !app.client.user ||
+    !message.mentions.has(app.client.user)
+  ) {
     return next();
   }
 

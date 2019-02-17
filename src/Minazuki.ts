@@ -24,8 +24,10 @@ export class Minazuki {
   }
 
   protected onReady = () => {
-    // tslint:disable-next-line no-console
-    console.log(`Logged in as ${this.client.user.tag}!`);
+    if (this.client.user) {
+      // tslint:disable-next-line no-console
+      console.log(`Logged in as ${this.client.user.tag}!`);
+    }
   };
 
   protected onMessage = (message: Discord.Message) => {

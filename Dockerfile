@@ -1,4 +1,4 @@
-FROM node:9-alpine AS build
+FROM node:10-alpine AS build
 ARG NODE_ENV=production
 WORKDIR /minazuki
 
