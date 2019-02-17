@@ -4,9 +4,11 @@ import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voiceChat';
 import { wikipedia, wikipediaFuzzyKeyword } from './features/wikipedia';
 import { MiddlewareManager } from './libs/MiddlwareManager';
+import { TravisCI } from './libs/Travis';
 
 export class Minazuki {
   private middlewares = new MiddlewareManager(this);
+  private travisCI = new TravisCI(config.travisCIToken, this);
   public client = new Discord.Client();
 
   constructor() {
@@ -28,6 +30,8 @@ export class Minazuki {
       // tslint:disable-next-line no-console
       console.log(`Logged in as ${this.client.user.tag}!`);
     }
+
+    this.travisCI.watchBuildStatus();
   };
 
   protected onMessage = (message: Discord.Message) => {
