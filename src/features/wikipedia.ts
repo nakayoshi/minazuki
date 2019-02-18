@@ -1,14 +1,13 @@
+// tslint:disable prefer-template
 import { Middleware } from '../libs/MiddlwareManager';
-import { Wikipedia } from '../libs/Wikipedia';
-
-const client = new Wikipedia();
 
 /**
  * Search an Wikipedia article
  * @param message Message recieved
  * @param next The next middleware
  */
-export const wikipedia: Middleware = async (message, app, next) => {
+export const searchWikipedia: Middleware = async (message, app, next) => {
+  const { wikipedia } = app;
   const { content, author } = message;
 
   if (
@@ -27,7 +26,7 @@ export const wikipedia: Middleware = async (message, app, next) => {
     }
 
     const query = result[1];
-    const page = await client.search(query);
+    const page = await wikipedia.search(query);
 
     if (!page) {
       return message.reply('記事が見つからなかったです。');
@@ -37,9 +36,9 @@ export const wikipedia: Middleware = async (message, app, next) => {
     summary = summary.replace(/\n/g, ' ');
     summary = `${summary.substr(0, 200)}...`;
 
-    message.reply(`
-${summary}
-https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
+    message.reply(
+      summary + `\nhttps://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`,
+    );
   } else {
     return next();
   }
@@ -50,7 +49,8 @@ https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
  * @param message Message recieved
  * @param next The next middleware
  */
-export const wikipediaFuzzyKeyword: Middleware = async (message, _, next) => {
+export const fuzzySearchWikipedia: Middleware = async (message, app, next) => {
+  const { wikipedia } = app;
   const { content, author } = message;
 
   if (author.bot) {
@@ -64,7 +64,7 @@ export const wikipediaFuzzyKeyword: Middleware = async (message, _, next) => {
   }
 
   const query = result[1];
-  const page = await client.search(query);
+  const page = await wikipedia.search(query);
 
   if (!page) {
     return message.reply('記事が見つからなかったです。');
@@ -74,7 +74,7 @@ export const wikipediaFuzzyKeyword: Middleware = async (message, _, next) => {
   summary = summary.replace(/\n/g, ' ');
   summary = `${summary.substr(0, 200)}...`;
 
-  message.reply(`
-${summary}
-https://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`);
+  message.reply(
+    summary + `\nhttps://ja.wikipedia.org/wiki?curid=${page.raw.pageid}`,
+  );
 };

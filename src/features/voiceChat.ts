@@ -1,20 +1,16 @@
-import * as Discord from 'discord.js';
-import { config } from '../config';
 import { Middleware } from '../libs/MiddlwareManager';
-import { VoiceText } from '../libs/VoiceText';
 import { validateVoiceChat } from '../utils/validateVoiceChat';
-
-const client = new VoiceText(config.voiceTextToken);
-const connections = new Map<string, Discord.VoiceConnection>();
 
 /**
  * Play audio of validated content
  * @param message Message which recieved
  * @param next The next middleware
  */
-export const voiceChat: Middleware = async (message, _, next) => {
+export const voiceChat: Middleware = async (message, app, next) => {
+  const { voiceText, voiceConnections } = app;
+
   const channelId = message.channel.id;
-  const connection = connections.get(channelId);
+  const connection = voiceConnections.get(channelId);
 
   if (!connection) {
     return next();
@@ -22,7 +18,7 @@ export const voiceChat: Middleware = async (message, _, next) => {
 
   try {
     const validatedContent = validateVoiceChat(message.content);
-    const audioFilePath = await client.speak(validatedContent);
+    const audioFilePath = await voiceText.speak(validatedContent);
     connection.play(audioFilePath);
   } catch (e) {
     console.warn(e);
@@ -41,13 +37,15 @@ export const controlVoiceConnections: Middleware = async (
   app,
   next,
 ) => {
+  const { client, voiceConnections } = app;
+
   const channelId = message.channel.id;
   const { content, member } = message;
 
   if (
     message.author.bot ||
-    !app.client.user ||
-    !message.mentions.has(app.client.user)
+    !client.user ||
+    !message.mentions.has(client.user)
   ) {
     return next();
   }
@@ -59,17 +57,17 @@ export const controlVoiceConnections: Middleware = async (
       );
     } else {
       const connection = await member.voice.channel.join();
-      connections.set(channelId, connection);
+      voiceConnections.set(channelId, connection);
       await message.reply('ボイスチャットに参加しました');
     }
-  } else if (/leave/.test(content) && member && member.voice.channel) {
+  } else if (/leave/.test(content) && member) {
     if (!member.voice.channel) {
       await message.reply(
         '発言者がボイスチャットに参加している場合のみ退出可能です',
       );
     } else {
       await member.voice.channel.leave();
-      connections.delete(channelId);
+      voiceConnections.delete(channelId);
       await message.reply('ボイスチャットから退出しました');
     }
   } else {

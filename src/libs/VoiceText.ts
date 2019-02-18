@@ -1,16 +1,13 @@
 import * as fs from 'fs';
 import fetch from 'node-fetch';
-import * as queryString from 'query-string';
+import * as querystring from 'querystring';
 import * as tmp from 'tmp';
 
 export class VoiceText {
-  protected token = '';
   protected url = 'https://api.voicetext.jp/v1';
   protected speaker = 'haruka';
 
-  constructor(token: string) {
-    this.token = token;
-  }
+  constructor(protected token: string) {}
 
   /**
    * Fetching audio data from VoiceText API
@@ -18,16 +15,6 @@ export class VoiceText {
    * @return Path to aduio file or False
    */
   public speak = async (text: string): Promise<string> => {
-    if (!this.token) {
-      // tslint:disable-next-line no-console
-      console.error(
-        'VoiceText: Authentication token is not specified' +
-          'See also https://cloud.voicetext.jp/webapi',
-      );
-
-      throw new Error('Fetching WAV failed');
-    }
-
     const { name: tmpFile } = tmp.fileSync();
     const formattedToken = Buffer.from(`${this.token}:`).toString('base64');
 
@@ -39,7 +26,7 @@ export class VoiceText {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
 
-      body: queryString.stringify({
+      body: querystring.stringify({
         text,
         speaker: this.speaker,
       }),
