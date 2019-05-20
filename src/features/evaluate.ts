@@ -26,15 +26,20 @@ export const evaluate: Middleware = async (message, app, next) => {
 
     const expr = result[1];
     let returnValue: any;
+    let thrown = false;
 
     try {
       returnValue = safeEval(expr);
-    } catch (e) {
-      returnValue = e;
+    } catch (error) {
+      thrown = true;
+      returnValue = error;
     }
 
     message.reply(
-      '評価結果:\n' + '```\n' + JSON.stringify(returnValue) + '\n```',
+      '評価結果:\n' +
+        '```\n' +
+        (thrown ? returnValue.toString() : JSON.stringify(returnValue)) +
+        '\n```',
     );
   } else {
     return next();
