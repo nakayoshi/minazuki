@@ -1,7 +1,7 @@
 import { PresenceStatusData } from 'discord.js';
 import fetch from 'node-fetch';
 import { config } from '../config';
-import { Minazuki } from '../Minazuki';
+import { Minazuki } from '../minazuki';
 import { delay } from '../utils/delay';
 
 export type BuildState =

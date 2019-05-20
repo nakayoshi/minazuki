@@ -1,5 +1,5 @@
 import { config } from './config';
-import { Minazuki } from './Minazuki';
+import { Minazuki } from './minazuki';
 
 function main() {
   if (!config.discordToken || !config.voiceTextToken) {

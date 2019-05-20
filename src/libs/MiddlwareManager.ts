@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { Minazuki } from '../Minazuki';
+import { Minazuki } from '../minazuki';
 
 export type Middleware = (
   message: Discord.Message,
