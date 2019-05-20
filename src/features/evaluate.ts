@@ -1,4 +1,4 @@
-import safeEval from 'safe-eval';
+import vm from 'vm';
 import { Middleware } from '../libs/middleware-manager';
 
 /**
@@ -25,14 +25,22 @@ export const evaluate: Middleware = async (message, app, next) => {
     }
 
     const expr = result[1];
+
+    if (expr.includes('Promise')) {
+      return message.reply('Promiseは利用できません');
+    }
+
     let returnValue: any;
     let thrown = false;
 
     try {
-      returnValue = safeEval(expr);
+      returnValue = vm.runInNewContext(expr, undefined, {
+        displayErrors: false,
+        timeout: 1000,
+      });
     } catch (error) {
-      thrown = true;
       returnValue = error;
+      thrown = true;
     }
 
     message.reply(
