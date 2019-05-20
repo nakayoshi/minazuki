@@ -1,5 +1,6 @@
 // tslint:disable no-import-side-effect mocha-no-side-effect-code no-non-null-assertion
 jest.mock('wikijs', () => ({
+  __esModule: true,
   default: jest.fn(() => ({
     search: jest.fn().mockResolvedValue({
       results: ['a', 'b', 'c'],

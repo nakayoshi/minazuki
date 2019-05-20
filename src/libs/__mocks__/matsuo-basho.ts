@@ -1,4 +1,5 @@
 export const MatsuoBasho = jest.fn(() => ({
+  __esModule: true,
   findHaiku: jest
     .fn()
     .mockResolvedValue([

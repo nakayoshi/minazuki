@@ -13,6 +13,7 @@ linterOptions:
     - '**/*.d.ts'
 
 rules:
+  completed-docs: false
   curly:
     - true
     - ignore-same-line

@@ -1,4 +1,4 @@
-import * as Discord from 'discord.js';
+import Discord from 'discord.js';
 import { config } from './config';
 import { evaluate } from './features/evaluate';
 import { haiku, tanka } from './features/haiku';

@@ -1,9 +1,4 @@
-/**
- * MatsuoBasho provides utilities for haiku
- * Original algorithm was desined by github.com/mattn 🙏
- * https://github.com/mattn/go-haiku/blob/master/haiku.go
- */
-import * as Kuromoji from 'kuromoji';
+import Kuromoji from 'kuromoji';
 
 interface AnalyzedToken {
   /** Surface form of the token */
@@ -14,6 +9,11 @@ interface AnalyzedToken {
   continue: boolean;
 }
 
+/**
+ * MatsuoBasho provides utilities for haiku
+ * Original algorithm was desined by github.com/mattn 🙏
+ * https://github.com/mattn/go-haiku/blob/master/haiku.go
+ */
 export class MatsuoBasho {
   protected ignoreSymbols = /[\[\]「」『』]/g;
   protected voicelessChars = /[ァィゥェォャュョ]/g;

@@ -1,4 +1,4 @@
-import * as Discord from 'discord.js';
+import Discord from 'discord.js';
 import { Minazuki } from '../minazuki';
 
 export type Middleware = (

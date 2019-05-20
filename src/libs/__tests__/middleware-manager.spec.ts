@@ -1,4 +1,4 @@
-import * as Discrod from 'discord.js';
+import Discrod from 'discord.js';
 import { Minazuki } from '../../minazuki';
 import { MiddlewareManager } from '../middleware-manager';
 

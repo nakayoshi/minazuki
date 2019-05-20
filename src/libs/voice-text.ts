@@ -1,7 +1,7 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import fetch from 'node-fetch';
-import * as querystring from 'querystring';
-import * as tmp from 'tmp';
+import querystring from 'querystring';
+import tmp from 'tmp';
 
 export class VoiceText {
   protected url = 'https://api.voicetext.jp/v1';

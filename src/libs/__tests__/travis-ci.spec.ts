@@ -3,6 +3,7 @@ import { Minazuki } from '../../minazuki';
 import { TravisCI } from '../travis-ci';
 
 jest.mock('node-fetch', () => ({
+  __esModule: true,
   default: jest.fn().mockResolvedValue({
     json: jest.fn().mockResolvedValue('foo'),
   }),
