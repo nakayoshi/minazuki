@@ -3,10 +3,10 @@ import { config } from './config';
 import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voice-chat';
 import { fuzzySearchWikipedia, searchWikipedia } from './features/wikipedia';
-import { Wikipedia } from './libs/_wikipedia';
 import { MiddlewareManager } from './libs/middleware-manager';
 import { TravisCI } from './libs/travis-ci';
 import { VoiceText } from './libs/voice-text';
+import { Wikipedia } from './libs/wikipedia';
 
 export class Minazuki {
   private middlewares = new MiddlewareManager(this);

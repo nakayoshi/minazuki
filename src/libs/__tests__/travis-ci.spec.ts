@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import { Minazuki } from '../../Minazuki';
-import { TravisCI } from '../TravisCI';
+import { Minazuki } from '../../minazuki';
+import { TravisCI } from '../travis-ci';
 
 jest.mock('node-fetch', () => ({
   default: jest.fn().mockResolvedValue({

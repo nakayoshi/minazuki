@@ -1,5 +1,5 @@
 import { Middleware } from '../libs/middleware-manager';
-import { validateVoiceChat } from '../utils/validateVoiceChat';
+import { validateVoiceChat } from '../utils/validate-voice-chat';
 
 /**
  * Play audio of validated content
