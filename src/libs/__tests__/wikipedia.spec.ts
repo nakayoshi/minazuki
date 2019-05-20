@@ -17,7 +17,7 @@ jest.mock('wikijs', () => ({
   })),
 }));
 
-import { Wikipedia } from '../Wikipedia';
+import { Wikipedia } from '../wikipedia';
 
 describe('Wikipedia', () => {
   it('searches an article of wikipedia with specific keyword', async () => {

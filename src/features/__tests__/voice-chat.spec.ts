@@ -1,9 +1,9 @@
-jest.mock('../../libs/VoiceText');
+jest.mock('../../libs/voice-text');
 
 import { Message } from 'discord.js';
-import { VoiceText } from '../../libs/VoiceText';
-import { Minazuki } from '../../Minazuki';
-import { controlVoiceConnections, voiceChat } from '../voiceChat';
+import { VoiceText } from '../../libs/voice-text';
+import { Minazuki } from '../../minazuki';
+import { controlVoiceConnections, voiceChat } from '../voice-chat';
 
 describe('voiceChat', () => {
   it('ignores join from bots', async () => {

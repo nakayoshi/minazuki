@@ -1,8 +1,8 @@
-jest.mock('../../libs/Wikipedia');
+jest.mock('../../libs/wikipedia');
 
 import { Message } from 'discord.js';
-import { Wikipedia } from '../../libs/Wikipedia';
-import { Minazuki } from '../../Minazuki';
+import { Wikipedia } from '../../libs/wikipedia';
+import { Minazuki } from '../../minazuki';
 import { fuzzySearchWikipedia, searchWikipedia } from '../wikipedia';
 
 describe('wikipedia', () => {

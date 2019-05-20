@@ -1,4 +1,4 @@
-import { validateVoiceChat } from '../validateVoiceChat';
+import { validateVoiceChat } from '../validate-voice-chat';
 
 describe('validateVoiceChat', () => {
   it('validates mention to suitable form for voice chat', () => {

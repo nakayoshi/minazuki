@@ -1,7 +1,7 @@
-jest.mock('../../libs/MatsuoBasho');
+jest.mock('../../libs/matsuo-basho');
 
 import { Message } from 'discord.js';
-import { Minazuki } from '../../Minazuki';
+import { Minazuki } from '../../minazuki';
 import { haiku, tanka } from '../haiku';
 
 describe('haiku', () => {
