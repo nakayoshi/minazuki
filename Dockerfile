@@ -27,7 +27,7 @@ RUN apk -U upgrade && apk add \
     yarn \
   && rm -rf /var/cache/apk/*
 
-COPY --from=build /minazuki/es           /minazuki/es
+COPY --from=build /minazuki/dist         /minazuki/dist
 COPY --from=build /minazuki/node_modules /minazuki/node_modules
 COPY --from=build /minazuki/package.json /minazuki/package.json
 

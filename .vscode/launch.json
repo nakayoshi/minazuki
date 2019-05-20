@@ -12,7 +12,7 @@
       "stopOnEntry": false,
       "preLaunchTask": "build",
       "outFiles": [
-        "${workspaceFolder}/es/**/*.js"
+        "${workspaceFolder}/dist/**/*.js"
       ]
     }
   ]

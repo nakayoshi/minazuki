@@ -6,7 +6,7 @@
   "testEnvironment": "node",
   "testPathIgnorePatterns": [
     "/node_modules/",
-    "<rootDir>/es/"
+    "<rootDir>/dist/"
   ],
   "moduleFileExtensions": [
     "ts",
