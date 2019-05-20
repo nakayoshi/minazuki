@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import { config } from './config';
+import { evaluate } from './features/evaluate';
 import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voice-chat';
 import { fuzzySearchWikipedia, searchWikipedia } from './features/wikipedia';
@@ -25,6 +26,7 @@ export class Minazuki {
     this.client.on('ready', this.onReady);
     this.client.on('message', this.onMessage);
 
+    this.middlewares.use(evaluate);
     this.middlewares.use(searchWikipedia);
     this.middlewares.use(fuzzySearchWikipedia);
     this.middlewares.use(controlVoiceConnections);
