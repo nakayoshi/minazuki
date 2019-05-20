@@ -1,4 +1,3 @@
-// tslint:disable prefer-template
 import { Middleware } from '../libs/middleware-manager';
 
 /**

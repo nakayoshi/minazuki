@@ -45,6 +45,7 @@ rules:
   no-single-line-block-comment: false
   no-submodule-imports: false
   object-literal-sort-keys: false
+  prefer-template: false
   prefer-for-of: true
   prefer-type-cast: false
   typedef: false
