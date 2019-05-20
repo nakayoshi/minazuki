@@ -1,4 +1,4 @@
-import { Middleware } from '../libs/MiddlwareManager';
+import { Middleware } from '../libs/middleware-manager';
 import { validateVoiceChat } from '../utils/validateVoiceChat';
 
 /**

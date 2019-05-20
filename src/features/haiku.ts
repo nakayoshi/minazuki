@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { MatsuoBasho } from '../libs/MatsuoBasho';
-import { Middleware } from '../libs/MiddlwareManager';
+import { MatsuoBasho } from '../libs/matsuo-basho';
+import { Middleware } from '../libs/middleware-manager';
 
 export const haiku: Middleware = async (message, _, next) => {
   if (message.author.bot) {
