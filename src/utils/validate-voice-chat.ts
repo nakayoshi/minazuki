@@ -10,7 +10,7 @@ export function validateVoiceChat(content: string): string {
       reading: 'ユーアールエル',
     },
     {
-      regexp: /<@[0-9]+>/g,
+      regexp: /<@!?[0-9]+>/g,
       reading: 'メンション',
     },
     {
