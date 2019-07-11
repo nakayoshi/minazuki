@@ -5,7 +5,7 @@
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
-  "tslint.enable": true,
+  "tslint.configFile": "../tslint.yml",
   "tslint.packageManager": "yarn",
   "npm.packageManager": "yarn"
 }

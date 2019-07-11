@@ -5,7 +5,6 @@ import { haiku, tanka } from './features/haiku';
 import { controlVoiceConnections, voiceChat } from './features/voice-chat';
 import { fuzzySearchWikipedia, searchWikipedia } from './features/wikipedia';
 import { MiddlewareManager } from './libs/middleware-manager';
-import { TravisCI } from './libs/travis-ci';
 import { VoiceText } from './libs/voice-text';
 import { Wikipedia } from './libs/wikipedia';
 
@@ -13,7 +12,6 @@ export class Minazuki {
   private middlewares = new MiddlewareManager(this);
 
   public client = new Discord.Client();
-  public travisCI = new TravisCI(this);
   public voiceText = new VoiceText(config.voiceTextToken);
   public wikipedia = new Wikipedia();
 
@@ -40,8 +38,6 @@ export class Minazuki {
       // tslint:disable-next-line no-console
       console.log(`Logged in as ${this.client.user.tag}!`);
     }
-
-    this.travisCI.watchBuildStatus();
   };
 
   protected onMessage = (message: Discord.Message) => {
