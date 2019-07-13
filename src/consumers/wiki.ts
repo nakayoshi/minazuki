@@ -23,7 +23,7 @@ const wikipediaHandler = async (params: WikipediaHandlerParams) => {
   const { results } = await wikijs.search(query);
 
   if (!results.length) {
-    return message.reply('記事が見つからなかったです。');
+    return message.reply('該当の記事は見つかりませんでした。');
   }
 
   const page = await wikijs.page(results[0]);
@@ -73,7 +73,7 @@ export const interactiveWiki: Consumer = context =>
   context.message$
     .pipe(filter(message => !message.author.bot))
     .subscribe(async message => {
-      const match = /(?<query> .+?)\s?とは/.exec(message.content);
+      const match = /(?<query>.+?)\s?とは/.exec(message.content);
       if (!match) return;
 
       const query = oc(match.groups).query();
