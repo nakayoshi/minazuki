@@ -5,8 +5,8 @@ describe('delay', () => {
     jest.useFakeTimers();
   });
 
-  it('awaits while specified ms', () => {
-    delay(1000);
+  it('awaits while specified ms', async () => {
+    await delay(1000);
     expect(setTimeout).toBeCalledTimes(1);
     expect(setTimeout).toBeCalledWith(expect.any(Function), 1000);
   });
