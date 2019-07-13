@@ -8,7 +8,7 @@ export const quote: Consumer = context =>
       filter(message => !message.author.bot && message.content.startsWith('>')),
     )
     .subscribe(async message => {
-      const match = /^\>\s?(?<query>[\s]+?)/.exec(message.content);
+      const match = /^\>\s?(?<query>[^\s]+)/.exec(message.content);
 
       if (!match || !match.groups || !match.groups.query) {
         return;
