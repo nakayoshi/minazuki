@@ -1,16 +1,20 @@
 import { Message, MessageEmbed } from 'discord.js';
+import { isLeft } from 'fp-ts/lib/Either';
+import * as t from 'io-ts';
+import { filter } from 'rxjs/operators';
+import { oc } from 'ts-optchain';
 import WikiJS from 'wikijs';
-import { Middleware } from '../libs/middleware-manager';
-import { fromBot, Parser, startsWith } from '../utils/parser';
+import yargsParser from 'yargs-parser';
+import { Consumer } from '.';
 
 interface WikipediaHandlerParams {
   message: Message;
   query: string;
-  host: string;
+  host?: string;
 }
 
 const wikipediaHandler = async (params: WikipediaHandlerParams) => {
-  const { message, query, host } = params;
+  const { message, query, host = 'ja.wikipedia.org' } = params;
 
   const wikijs = WikiJS({
     apiUrl: `https://${host}/w/api.php`,
@@ -43,54 +47,41 @@ const wikipediaHandler = async (params: WikipediaHandlerParams) => {
   return message.channel.send(embed);
 };
 
-/**
- * Search an Wikipedia article
- * @param message Message recieved
- * @param next The next middleware
- */
-export const searchWiki: Middleware = (message, _context, next) =>
-  new Parser(message)
-    .filter(startsWith('/wiki'))
-    .filterNot(fromBot)
-    .positional('query', {
-      type: 'string',
-      required: true,
-    })
-    .option('host', {
-      type: 'string',
-      alias: ['h'],
-      default: 'ja.wikipedia.org',
-    })
-    .handle(async ({ query = '!', host = '!' }) => {
+const SearchWikiProps = t.type({
+  _: t.tuple([t.literal('/wiki'), t.string]),
+  host: t.union([t.string, t.undefined]),
+});
+
+export const searchWiki: Consumer = context =>
+  context.message$
+    .pipe(
+      filter(
+        message => !message.author.bot && message.content.startsWith('/wiki'),
+      ),
+    )
+    .subscribe(async message => {
+      const args = SearchWikiProps.decode(yargsParser(message.content));
+      if (isLeft(args)) return;
+
+      const [, query] = args.right._;
+      const { host } = args.right;
+
       await wikipediaHandler({ query, host, message });
-    })
-    .catch(() => {
-      next();
     });
 
-/**
- * Search an Wikipedia article
- * @param message Message recieved
- * @param next The next middleware
- */
-export const interactiveWiki: Middleware = (message, _, next) =>
-  new Parser(message)
-    .capture('query', {
-      type: 'string',
-      regexp: /(.+?)\s?とは$/,
-    })
-    .handle(({ query }) => {
-      if (!query) {
-        next();
-        return;
-      }
+export const interactiveWiki: Consumer = context =>
+  context.message$
+    .pipe(filter(message => !message.author.bot))
+    .subscribe(async message => {
+      const match = /(?<query> .+?)\s?とは/.exec(message.content);
+      if (!match) return;
+
+      const query = oc(match.groups).query();
+      if (!query) return;
 
       return wikipediaHandler({
         query: query,
         host: 'ja.wikipedia.org',
         message,
       });
-    })
-    .catch(() => {
-      next();
     });

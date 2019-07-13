@@ -55,3 +55,4 @@ rules:
   strict-boolean-expressions: false
   prefer-template: false
   newline-before-return: false
+  no-void-expression: false

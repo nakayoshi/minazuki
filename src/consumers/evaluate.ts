@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
+import { filter } from 'rxjs/operators';
 import vm from 'vm';
-import { Middleware } from '../libs/middleware-manager';
-import { fromBot, Parser, startsWith } from '../utils/parser';
+import { Consumer } from '.';
 
 const handleCode = async (expr: string, message: Message) => {
   let returnValue: any;
@@ -19,39 +19,40 @@ const handleCode = async (expr: string, message: Message) => {
       },
     );
   } catch (error) {
-    if (error instanceof Error) {
-      thrownError = error;
-    }
+    thrownError = error as Error;
   }
 
   return message.channel.send(
-    '```\n' +
+    '```js\n' +
       (!!thrownError ? thrownError.toString() : JSON.stringify(returnValue)) +
       '\n```',
   );
 };
 
-export const evaluateExpr: Middleware = (message, _context, next) =>
-  new Parser(message)
-    .filterNot(fromBot)
-    .filter(startsWith('/eval'))
-    .positional('expr', { type: 'string' })
-    .handle(({ expr }) => {
+// const Props = t.type({
+//   _: t.tuple([t.literal('/eval'), t.string]),
+// });
+
+export const evaluateExpr: Consumer = context =>
+  context.message$
+    .pipe(
+      filter(
+        message => !message.author.bot && message.content.startsWith('/eval'),
+      ),
+    )
+    .subscribe(async message => {
+      const codelike = message.content.replace(/\/eval\s?/, '');
+      if (!codelike) {
+        return message.channel.send('評価する式を指定してください。');
+      }
+
       const matches = /```!(js|javascript)+\n(?<codeblock>(.|\n)+?)```/.exec(
-        message.content,
+        codelike,
       );
 
       if (matches && matches.groups && matches.groups.codeblock) {
         return handleCode(matches.groups.codeblock, message);
       }
 
-      if (!expr) {
-        next();
-        return;
-      }
-
-      return handleCode(expr, message);
-    })
-    .catch(() => {
-      next();
+      return handleCode(codelike, message);
     });

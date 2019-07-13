@@ -1,6 +1,6 @@
-import { Minazuki } from './minazuki';
+import { Context } from './context';
 
 // tslint:disable no-floating-promises
 (async () => {
-  await Minazuki.init();
+  await Context.init();
 })();
