@@ -13,7 +13,6 @@ linterOptions:
     - '**/*.d.ts'
 
 rules:
-  completed-docs: false
   curly:
     - true
     - ignore-same-line
@@ -26,6 +25,7 @@ rules:
   interface-name:
     - true
     - never-prefix
+  function-name: false
   max-line-length: false
   member-ordering: false
   no-angle-bracket-type-assertion: true
@@ -46,8 +46,12 @@ rules:
   no-single-line-block-comment: false
   no-submodule-imports: false
   object-literal-sort-keys: false
-  prefer-template: false
   prefer-for-of: true
   prefer-type-cast: false
   typedef: false
   variable-name: false
+  informative-docs: false
+  mocha-no-side-effect-code: false
+  strict-boolean-expressions: false
+  prefer-template: false
+  newline-before-return: false

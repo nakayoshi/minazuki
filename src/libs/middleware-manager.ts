@@ -3,31 +3,23 @@ import { Minazuki } from '../minazuki';
 
 export type Middleware = (
   message: Discord.Message,
-  app: Minazuki,
-  next: (...args: any[]) => any,
-) => any;
+  context: Minazuki,
+  next: (...args: any[]) => void,
+) => void;
 
-export type WrappedMiddleware = (message: Discord.Message) => Middleware;
+export type MiddlewareCaller = (
+  message: Discord.Message,
+) => ReturnType<Middleware>;
 
+/**
+ * Middleware
+ */
 export class MiddlewareManager {
-  protected middlewares: WrappedMiddleware[] = [];
-  protected minazuki: Minazuki;
+  protected readonly context: Minazuki;
+  protected readonly middlewareCallers: MiddlewareCaller[] = [];
 
-  constructor(minazuki: Minazuki) {
-    this.minazuki = minazuki;
-  }
-
-  /**
-   * Append middleware
-   * @param middleware Function to append as middleware
-   */
-  public use(middleware: Middleware) {
-    const index = this.middlewares.length;
-
-    const wrappedMiddleware = (message: Discord.Message) =>
-      middleware(message, this.minazuki, () => this.next(index, message));
-
-    this.middlewares.push(wrappedMiddleware);
+  constructor(context: Minazuki) {
+    this.context = context;
   }
 
   /**
@@ -35,19 +27,45 @@ export class MiddlewareManager {
    * @param index Current index
    * @param message Message which recieved
    */
-  protected next(index: number, message: Discord.Message) {
-    if (index + 1 < this.middlewares.length) {
-      this.middlewares[index + 1](message);
+  protected findNextMiddlewareCaller(index: number) {
+    if (index + 1 < this.middlewareCallers.length) {
+      return this.middlewareCallers[index + 1];
+    }
+
+    return;
+  }
+
+  /**
+   * Append middleware
+   * @param middleware Function to append as middleware
+   */
+  public use(middleware: Middleware): this {
+    const index = this.middlewareCallers.length;
+
+    const middlewareCaller = (message: Discord.Message) => {
+      middleware(message, this.context, () => {
+        const nextCaller = this.findNextMiddlewareCaller(index);
+
+        if (nextCaller) {
+          nextCaller(message);
+        }
+      });
 
       return;
-    }
+    };
+
+    this.middlewareCallers.push(middlewareCaller);
+
+    return this;
   }
 
   /**
    * Start chain responsibility
    * @param message Message which recieved
    */
-  public handle(message: Discord.Message): void {
-    this.middlewares[0](message);
+  public handle(message: Discord.Message): this {
+    this.middlewareCallers[0](message);
+
+    return this;
   }
 }

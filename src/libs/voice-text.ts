@@ -1,8 +1,11 @@
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import fetch from 'node-fetch';
 import querystring from 'querystring';
 import tmp from 'tmp';
 
+/**
+ * Voicetext api wrapper
+ */
 export class VoiceText {
   protected url = 'https://api.voicetext.jp/v1';
   protected speaker = 'haruka';
@@ -37,7 +40,7 @@ export class VoiceText {
     }
 
     // tslint:disable-next-line non-literal-fs-path
-    await fs.writeFileSync(tmpFile, await response.buffer());
+    await fs.writeFile(tmpFile, await response.buffer());
 
     return tmpFile;
   };

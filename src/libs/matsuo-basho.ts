@@ -220,7 +220,7 @@ export class MatsuoBasho {
    * @param text Sentence to find
    * @return Haiku splited by rules
    */
-  public findHaiku(text: string): Promise<string[] | undefined> {
+  public async findHaiku(text: string): Promise<string[] | undefined> {
     let matches: string[] = [];
     const validatedText = text.replace(this.ignoreSymbols, '');
 
@@ -244,14 +244,12 @@ export class MatsuoBasho {
               matches = [];
               position = 0;
               const { done } = tokens.next(true);
-
-              if (done) {
-                break;
-              }
-            } else {
-              matches.push(mora);
-              position += 1;
+              if (done) break;
+              continue;
             }
+
+            matches.push(mora);
+            position += 1;
           }
 
           resolve(matches.length === this.rules.length ? matches : undefined);

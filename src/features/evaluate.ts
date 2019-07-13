@@ -1,55 +1,57 @@
+import { Message } from 'discord.js';
 import vm from 'vm';
 import { Middleware } from '../libs/middleware-manager';
+import { fromBot, Parser, startsWith } from '../utils/parser';
 
-/**
- * Search an Wikipedia article
- * @param message Message recieved
- * @param next The next middleware
- */
-export const evaluate: Middleware = async (message, app, next) => {
-  const { content, author } = message;
+const handleCode = async (expr: string, message: Message) => {
+  let returnValue: any;
+  let thrownError: Error | undefined;
 
-  if (
-    author.bot ||
-    !app.client.user ||
-    !message.mentions.has(app.client.user)
-  ) {
-    return next();
-  }
-
-  if (/eval/.test(content)) {
-    const result = content.match(/eval\s?(.+?)$/);
-
-    if (!result || !result[1]) {
-      return message.reply('コードを入力して式を評価します');
-    }
-
-    const expr = result[1];
-
-    if (expr.includes('Promise')) {
-      return message.reply('Promiseは利用できません');
-    }
-
-    let returnValue: any;
-    let thrown = false;
-
-    try {
-      returnValue = vm.runInNewContext(expr, undefined, {
+  try {
+    returnValue = vm.runInNewContext(
+      expr,
+      {
+        Promise: undefined,
+      },
+      {
         displayErrors: false,
         timeout: 1000,
-      });
-    } catch (error) {
-      returnValue = error;
-      thrown = true;
-    }
-
-    message.reply(
-      '評価結果:\n' +
-        '```\n' +
-        (thrown ? returnValue.toString() : JSON.stringify(returnValue)) +
-        '\n```',
+      },
     );
-  } else {
-    return next();
+  } catch (error) {
+    if (error instanceof Error) {
+      thrownError = error;
+    }
   }
+
+  return message.channel.send(
+    '```\n' +
+      (!!thrownError ? thrownError.toString() : JSON.stringify(returnValue)) +
+      '\n```',
+  );
 };
+
+export const evaluateExpr: Middleware = (message, _context, next) =>
+  new Parser(message)
+    .filterNot(fromBot)
+    .filter(startsWith('/eval'))
+    .positional('expr', { type: 'string' })
+    .handle(({ expr }) => {
+      const matches = /```!(js|javascript)+\n(?<codeblock>(.|\n)+?)```/.exec(
+        message.content,
+      );
+
+      if (matches && matches.groups && matches.groups.codeblock) {
+        return handleCode(matches.groups.codeblock, message);
+      }
+
+      if (!expr) {
+        next();
+        return;
+      }
+
+      return handleCode(expr, message);
+    })
+    .catch(() => {
+      next();
+    });

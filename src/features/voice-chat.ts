@@ -1,19 +1,17 @@
+import { VoiceChannel } from 'discord.js';
 import { Middleware } from '../libs/middleware-manager';
+import { fromBot, Parser, startsWith } from '../utils/parser';
 import { validateVoiceChat } from '../utils/validate-voice-chat';
 
-/**
- * Play audio of validated content
- * @param message Message which recieved
- * @param next The next middleware
- */
-export const voiceChat: Middleware = async (message, app, next) => {
+export const speakVoiceChat: Middleware = async (message, app, next) => {
   const { voiceText, voiceConnections } = app;
 
   const channelId = message.channel.id;
   const connection = voiceConnections.get(channelId);
 
   if (!connection) {
-    return next();
+    next();
+    return;
   }
 
   try {
@@ -24,53 +22,61 @@ export const voiceChat: Middleware = async (message, app, next) => {
     console.warn(e);
   }
 
-  return next();
+  next();
+  return;
 };
 
-/**
- * Control joined voice connection
- * @param message Message which recieved
- * @param next The next middleware
- */
-export const controlVoiceConnections: Middleware = async (
-  message,
-  app,
-  next,
-) => {
-  const { client, voiceConnections } = app;
+export const leaveVoiceChat: Middleware = (message, context, next) =>
+  new Parser(message)
+    .filterNot(fromBot)
+    .filter(startsWith('/leave'))
+    .handle(async () => {
+      const { member } = message;
+      const { voiceConnections } = context;
 
-  const channelId = message.channel.id;
-  const { content, member } = message;
+      if (!member.voice.channel) {
+        return message.channel.send(
+          '発言者がボイスチャットに参加している場合のみ退出可能です',
+        );
+      }
 
-  if (
-    message.author.bot ||
-    !client.user ||
-    !message.mentions.has(client.user)
-  ) {
-    return next();
-  }
+      member.voice.channel.leave();
+      voiceConnections.delete(message.channel.id);
 
-  if (/join/.test(content) && member) {
-    if (!member.voice.channel) {
-      await message.reply(
-        '発言者がボイスチャットに参加している場合のみ参加可能です',
-      );
-    } else {
-      const connection = await member.voice.channel.join();
-      voiceConnections.set(channelId, connection);
-      await message.reply('ボイスチャットに参加しました');
-    }
-  } else if (/leave/.test(content) && member) {
-    if (!member.voice.channel) {
-      await message.reply(
-        '発言者がボイスチャットに参加している場合のみ退出可能です',
-      );
-    } else {
-      await member.voice.channel.leave();
-      voiceConnections.delete(channelId);
-      await message.reply('ボイスチャットから退出しました');
-    }
-  } else {
-    return next();
-  }
-};
+      return message.channel.send('ボイスチャットから退出しました');
+    })
+    .catch(() => {
+      next();
+    });
+
+export const joinVoiceChat: Middleware = async (message, context, next) =>
+  new Parser(message)
+    .filterNot(fromBot)
+    .filter(startsWith('/join'))
+    .option('channel', {
+      type: 'string',
+    })
+    .handle(async ({ channel }) => {
+      const { voiceConnections } = context;
+
+      if (!channel) {
+        return message.channel.send(
+          '発言者がボイスチャットに参加している場合のみ参加可能です',
+        );
+      }
+
+      const voiceChannel = context.client.channels.get(channel);
+
+      if (!voiceChannel) {
+        next();
+        return;
+      }
+
+      const connection = await (voiceChannel as VoiceChannel).join();
+      voiceConnections.set(message.channel.id, connection);
+
+      return message.channel.send('ボイスチャットに参加しました');
+    })
+    .catch(() => {
+      next();
+    });

@@ -1,46 +1,49 @@
 import Discord from 'discord.js';
 import { config } from './config';
-import { evaluate } from './features/evaluate';
-import { haiku, tanka } from './features/haiku';
-import { controlVoiceConnections, voiceChat } from './features/voice-chat';
-import { fuzzySearchWikipedia, searchWikipedia } from './features/wikipedia';
+import { evaluateExpr } from './features/evaluate';
+import { haiku } from './features/haiku';
+import {
+  joinVoiceChat,
+  leaveVoiceChat,
+  speakVoiceChat,
+} from './features/voice-chat';
+import { interactiveWiki, searchWiki } from './features/wiki';
 import { MiddlewareManager } from './libs/middleware-manager';
 import { VoiceText } from './libs/voice-text';
-import { Wikipedia } from './libs/wikipedia';
 
+/**
+ * Context
+ */
 export class Minazuki {
-  private middlewares = new MiddlewareManager(this);
-
+  private readonly middlewares = new MiddlewareManager(this);
   public client = new Discord.Client();
   public voiceText = new VoiceText(config.voiceTextToken);
-  public wikipedia = new Wikipedia();
-
-  /** Map of cannelId and voice conenction */
   public voiceConnections = new Map<string, Discord.VoiceConnection>();
 
-  constructor() {
-    this.client.login(config.discordToken);
+  public static async init() {
+    const _this = new Minazuki();
 
-    this.client.on('ready', this.onReady);
-    this.client.on('message', this.onMessage);
-
-    this.middlewares.use(evaluate);
-    this.middlewares.use(searchWikipedia);
-    this.middlewares.use(fuzzySearchWikipedia);
-    this.middlewares.use(controlVoiceConnections);
-    this.middlewares.use(voiceChat);
-    this.middlewares.use(tanka);
-    this.middlewares.use(haiku);
+    await _this.client.login(config.discordToken);
+    _this.client.on('ready', _this.handleReady);
+    _this.client.on('message', _this.handleMessage);
   }
 
-  protected onReady = () => {
-    if (this.client.user) {
-      // tslint:disable-next-line no-console
-      console.log(`Logged in as ${this.client.user.tag}!`);
-    }
+  protected handleReady = () => {
+    if (!this.client.user) return;
+
+    // tslint:disable-next-line no-console
+    console.log(`Logged in as ${this.client.user.tag}!`);
+
+    this.middlewares.use(evaluateExpr);
+    this.middlewares.use(searchWiki);
+    this.middlewares.use(interactiveWiki);
+    this.middlewares.use(joinVoiceChat);
+    this.middlewares.use(leaveVoiceChat);
+    this.middlewares.use(speakVoiceChat);
+    this.middlewares.use(haiku);
   };
 
-  protected onMessage = (message: Discord.Message) => {
+  protected handleMessage = (message: Discord.Message) => {
     this.middlewares.handle(message);
   };
 }
