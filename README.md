@@ -5,12 +5,12 @@
 ## Features
 | Command               | Discription                                      |
 | :-------------------- | :----------------------------------------------- |
-| `@mention wiki foo`   | Search `foo` in Wikipedia                        |
-| `@mention eval foo`   | Evaluate JS code                                 |
-| `@mention join`       | Join voice channel which you currently joined in |
-| `@mention leave`      | Leave from voice channel                         |
-| After `@mention join` | Bot reads message you sent in your voice chat    |
-| Always                | Detect your haiku                                |
+| `/wiki article name` | Search `foo` in Wikipedia                        |
+| `/eval expr`         | Evaluate JS code                                 |
+| `/join [--channel]`  | Join VC you currently joined in then speak messages from the guild |
+| `/leave [--channel]` | Leave from voice channel                         |
+| `>keyword`           | Quote message                                    |
+| Always               | Detect your haiku                                |
 
 ## Deployment
 First, install dependencies with yarn
