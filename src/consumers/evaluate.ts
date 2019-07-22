@@ -48,7 +48,7 @@ const handleCode = async (expr: string, message: Message) => {
     return message.channel.send(codeblockfy(errorMessage));
   } catch {
     return message.channel.send(
-      'エラーが発生し、Error.prototype.toString関数の実行に失敗しました。',
+      'エラーが発生し、メソッド `Error.prototype.toString()` の実行に失敗しました。',
     );
   }
 };
