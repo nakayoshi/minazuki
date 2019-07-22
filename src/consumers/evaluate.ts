@@ -1,32 +1,56 @@
 import { Message } from 'discord.js';
 import { filter } from 'rxjs/operators';
-import vm from 'vm';
+import vm, { Context, RunningScriptOptions } from 'vm';
 import { Consumer } from '.';
+
+const probablySafeEval = (
+  expr: string,
+  context?: Context,
+  options?: RunningScriptOptions,
+) => {
+  return vm.runInNewContext(
+    expr,
+    {
+      Promise: undefined,
+      ...context,
+    },
+    {
+      displayErrors: false,
+      timeout: 1000,
+      ...options,
+    },
+  );
+};
+
+const codeblockfy = (code: string, language = 'json') => {
+  return '```' + language + '\n' + code + '\n```';
+};
 
 const handleCode = async (expr: string, message: Message) => {
   let returnValue: any;
   let thrownError: Error | undefined;
 
   try {
-    returnValue = vm.runInNewContext(
-      expr,
-      {
-        Promise: undefined,
-      },
-      {
-        displayErrors: false,
-        timeout: 1000,
-      },
-    );
+    returnValue = probablySafeEval(expr);
   } catch (error) {
     thrownError = error as Error;
   }
 
-  return message.channel.send(
-    '```js\n' +
-      (!!thrownError ? thrownError.toString() : JSON.stringify(returnValue)) +
-      '\n```',
-  );
+  if (!thrownError) {
+    return message.channel.send(codeblockfy(JSON.stringify(returnValue)));
+  }
+
+  try {
+    const errorMessage = probablySafeEval('error.toString()', {
+      error: thrownError,
+    }) as string;
+
+    return message.channel.send(codeblockfy(errorMessage));
+  } catch {
+    return message.channel.send(
+      'エラーが発生し、Error.prototype.toString関数の実行に失敗しました。',
+    );
+  }
 };
 
 // const Props = t.type({
@@ -46,7 +70,7 @@ export const evaluateExpr: Consumer = context =>
         return message.channel.send('評価する式を指定してください。');
       }
 
-      const matches = /```!(js|javascript)+\n(?<codeblock>(.|\n)+?)```/.exec(
+      const matches = /```(js|javascript)+\n(?<codeblock>(.|\n)+?)```/.exec(
         codelike,
       );
 
