@@ -37,15 +37,39 @@ const handleCode = async (expr: string, message: Message) => {
   }
 
   if (!thrownError) {
-    return message.channel.send(codeblockfy(JSON.stringify(returnValue)));
+    try {
+      // When the value is an object, JSON.stringify() just calls Object.toJSON
+      // so you must wrap then with the vm to avoid allowing users to execute codes out of the sandbox
+      const jsonString = probablySafeEval('JSON.stringify(value)', {
+        value: returnValue,
+      }) as string;
+      const codeblock = codeblockfy(jsonString);
+
+      return message.channel.send(codeblock);
+    } catch {
+      return message.channel.send(
+        '返り値のJSON文字列化に失敗しました。' +
+          '循環参照やカスタム `toJSON()` メソッドの実装がないか確認してください',
+      );
+    }
   }
 
   try {
+    // As well as JSON.stringfiy(), you need to use vm technique here
     const errorMessage = probablySafeEval('error.toString()', {
       error: thrownError,
     }) as string;
 
-    return message.channel.send(codeblockfy(errorMessage));
+    // You have to ensure that the return value of `Error.prototype.toString()` is a string.
+    // Because when users tried to evaluate expressions that throw an object which contains custom `toString()`,
+    // then you will allow users to run the user-specified `toString()` out of the VM through the implicit type conversion.
+    if (typeof errorMessage !== 'string') {
+      throw Error('Result of error.toString() is not a string');
+    }
+
+    const codeblock = codeblockfy(errorMessage);
+
+    return message.channel.send(codeblock);
   } catch {
     return message.channel.send(
       'エラーが発生し、メソッド `Error.prototype.toString()` の実行に失敗しました。',
