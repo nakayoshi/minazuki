@@ -8,32 +8,36 @@ export const quote: Consumer = context =>
       filter(message => !message.author.bot && message.content.startsWith('>')),
     )
     .subscribe(async message => {
+      // tslint:disable-next-line no-floating-promises
+      message.channel.startTyping();
+
       const match = /\>\s?(?<query>[^\s]+)/.exec(message.content);
 
       if (!match || !match.groups || !match.groups.query) {
-        return;
+        return message.channel.stopTyping(true);
       }
 
       const { query } = match.groups;
 
-      //tslint:disable-next-line no-unsafe-any
-      const messages = await message.channel.messages.fetch({
-        limit: 100,
-      });
+      const quotedMessage = await message.channel.messages
+        .fetch({ limit: 100 })
+        .then(messages =>
+          messages.find(m => m.id !== message.id && m.content.includes(query)),
+        );
 
-      const hitMessage = messages.find(
-        m => m.id !== message.id && m.content.includes(query),
-      );
-      if (!hitMessage) return;
+      if (!quotedMessage) {
+        return message.channel.stopTyping(true);
+      }
 
       const embed = new MessageEmbed()
         .setAuthor(
-          hitMessage.author.tag,
-          hitMessage.author.avatarURL({ size: 16 }),
-          hitMessage.url,
+          quotedMessage.author.tag,
+          quotedMessage.author.avatarURL({ size: 16 }),
+          quotedMessage.url,
         )
-        .setDescription(hitMessage.content)
-        .setTimestamp(hitMessage.createdTimestamp);
+        .setDescription(quotedMessage.content)
+        .setTimestamp(quotedMessage.createdTimestamp);
 
+      message.channel.stopTyping(true);
       return message.channel.send(embed);
     });

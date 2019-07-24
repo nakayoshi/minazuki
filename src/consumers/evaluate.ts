@@ -89,18 +89,29 @@ export const evaluateExpr: Consumer = context =>
       ),
     )
     .subscribe(async message => {
-      const codelike = message.content.replace(/\/eval\s?/, '');
-      if (!codelike) {
+      // tslint:disable-next-line no-floating-promises
+      message.channel.startTyping();
+
+      const codeBlockRegexp = /```(js|javascript)+\n(?<codeblock>(.|\n)+?)```/;
+      const code = message.content.replace(/\/eval\s?/, '');
+
+      if (!code) {
+        message.channel.stopTyping(true);
         return message.channel.send('評価する式を指定してください。');
       }
 
-      const matches = /```(js|javascript)+\n(?<codeblock>(.|\n)+?)```/.exec(
-        codelike,
-      );
+      let expr = code;
 
-      if (matches && matches.groups && matches.groups.codeblock) {
-        return handleCode(matches.groups.codeblock, message);
+      const codeBlockMatches = codeBlockRegexp.exec(code);
+
+      if (
+        codeBlockMatches &&
+        codeBlockMatches.groups &&
+        codeBlockMatches.groups.codeblock
+      ) {
+        expr = codeBlockMatches.groups.codeblock;
       }
 
-      return handleCode(codelike, message);
+      message.channel.stopTyping(true);
+      return handleCode(expr, message);
     });

@@ -42,6 +42,9 @@ export const leaveVoiceChat: Consumer = context =>
       const args = LeaveProps.decode(yargsParser(message.content));
       if (isLeft(args)) return;
 
+      // tslint:disable-next-line no-floating-promises
+      message.channel.startTyping();
+
       // VoiceConnection of same guild
       const guildsConnection = context.client.voiceConnections.find(
         c => c.channel.guild.id === oc(message).guild.id(),
@@ -50,16 +53,19 @@ export const leaveVoiceChat: Consumer = context =>
       const { channel = oc(guildsConnection).channel.id() } = args.right;
 
       if (!channel) {
+        message.channel.stopTyping(true);
         return message.channel.send('参加中のボイスチャットはありません');
       }
 
       const voiceChannel = context.client.channels.get(channel);
 
       if (!voiceChannel || !(voiceChannel instanceof VoiceChannel)) {
+        message.channel.stopTyping(true);
         return message.channel.send('指定されたチャンネルは存在しません');
       }
 
       voiceChannel.leave();
+      message.channel.stopTyping(true);
       return message.channel.send('ボイスチャットから退出しました');
     });
 
@@ -75,11 +81,15 @@ export const joinVoiceChat: Consumer = async context =>
       const args = JoinProps.decode(yargsParser(message.content));
       if (isLeft(args)) return;
 
+      // tslint:disable-next-line no-floating-promises
+      message.channel.startTyping();
+
       // Set default `channel` arg to the ID of the channel which sender currently join
       const senderVoiceChannel = oc(message).member.voice.channel.id();
       const { channel = senderVoiceChannel } = args.right;
 
       if (!channel) {
+        message.channel.stopTyping(true);
         return message.channel.send(
           '発言者がボイスチャットに参加している場合のみ参加可能です',
         );
@@ -88,9 +98,11 @@ export const joinVoiceChat: Consumer = async context =>
       const voiceChannel = context.client.channels.get(channel);
 
       if (!voiceChannel || !(voiceChannel instanceof VoiceChannel)) {
+        message.channel.stopTyping(true);
         return message.channel.send('指定されたチャンネルは存在しません');
       }
 
       await voiceChannel.join();
+      message.channel.stopTyping(true);
       return message.channel.send('ボイスチャットに参加しました');
     });

@@ -16,6 +16,9 @@ interface WikipediaHandlerParams {
 const wikipediaHandler = async (params: WikipediaHandlerParams) => {
   const { message, query, host = 'ja.wikipedia.org' } = params;
 
+  // tslint:disable-next-line no-floating-promises
+  message.channel.startTyping();
+
   const wikijs = WikiJS({
     apiUrl: `https://${host}/w/api.php`,
   });
@@ -23,6 +26,7 @@ const wikipediaHandler = async (params: WikipediaHandlerParams) => {
   const { results } = await wikijs.search(query);
 
   if (!results.length) {
+    message.channel.stopTyping(true);
     return message.reply('該当の記事は見つかりませんでした。');
   }
 
@@ -44,6 +48,7 @@ const wikipediaHandler = async (params: WikipediaHandlerParams) => {
     .setDescription(summary)
     .setTimestamp(new Date((page as any).raw.touched)); // tslint:disable-line no-unsafe-any
 
+  message.channel.stopTyping(true);
   return message.channel.send(embed);
 };
 
