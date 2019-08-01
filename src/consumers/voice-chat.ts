@@ -2,10 +2,10 @@ import { VoiceChannel } from 'discord.js';
 import { isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { filter } from 'rxjs/operators';
-import { filterNotBot, filterStartsWith } from 'src/operators';
 import { oc } from 'ts-optchain';
 import yargsParser from 'yargs-parser';
 import { Consumer } from '.';
+import { filterNotBot, filterStartsWith } from '../operators';
 import { validateVoiceChat } from '../utils/validate-voice-chat';
 
 export const safeDisconnect: Consumer = async context =>

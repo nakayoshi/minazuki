@@ -1,11 +1,11 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
-import { filterNotBot, filterStartsWith } from 'src/operators';
 import { oc } from 'ts-optchain';
 import WikiJS from 'wikijs';
 import yargsParser from 'yargs-parser';
 import { Consumer } from '.';
+import { filterNotBot, filterStartsWith } from '../operators';
 
 interface WikipediaHandlerParams {
   message: Message;
