@@ -1,4 +1,4 @@
-import Discord, { Message } from 'discord.js';
+import Discord, { Message, VoiceState } from 'discord.js';
 import { fromEvent } from 'rxjs';
 import { config } from './config';
 import { evaluateExpr } from './consumers/evaluate';
@@ -7,6 +7,7 @@ import { quote } from './consumers/quote';
 import {
   joinVoiceChat,
   leaveVoiceChat,
+  safeDisconnect,
   speakVoiceChat,
 } from './consumers/voice-chat';
 import { interactiveWiki, searchWiki } from './consumers/wiki';
@@ -18,10 +19,18 @@ import { VoiceText } from './utils/voice-text';
 export class Context {
   /** Discord client */
   public client = new Discord.Client();
+
   /** VoiceText client */
   public voiceText = new VoiceText(config.voiceTextToken);
+
   /** Message observable */
   public message$ = fromEvent<Message>(this.client, 'message');
+
+  /** Connection observable */
+  public voiceStateUpdate$ = fromEvent<[VoiceState, VoiceState]>(
+    this.client,
+    'voiceStateUpdate',
+  );
 
   /**
    * Initialize context
@@ -50,6 +59,7 @@ export class Context {
       interactiveWiki,
       searchWiki,
       quote,
+      safeDisconnect,
     ].forEach(consumer => {
       consumer(this);
     });

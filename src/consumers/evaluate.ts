@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
-import { filter } from 'rxjs/operators';
 import vm, { Context, RunningScriptOptions } from 'vm';
 import { Consumer } from '.';
+import { filterNotBot, filterStartsWith } from '../operators';
 
 const probablySafeEval = (
   expr: string,
@@ -84,9 +84,8 @@ const handleCode = async (expr: string, message: Message) => {
 export const evaluateExpr: Consumer = context =>
   context.message$
     .pipe(
-      filter(
-        message => !message.author.bot && message.content.startsWith('/eval'),
-      ),
+      filterNotBot,
+      filterStartsWith('/eval'),
     )
     .subscribe(async message => {
       // tslint:disable-next-line no-floating-promises

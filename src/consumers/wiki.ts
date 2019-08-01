@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
-import { filter } from 'rxjs/operators';
+import { filterNotBot, filterStartsWith } from 'src/operators';
 import { oc } from 'ts-optchain';
 import WikiJS from 'wikijs';
 import yargsParser from 'yargs-parser';
@@ -60,9 +60,8 @@ const SearchWikiProps = t.type({
 export const searchWiki: Consumer = context =>
   context.message$
     .pipe(
-      filter(
-        message => !message.author.bot && message.content.startsWith('/wiki'),
-      ),
+      filterNotBot,
+      filterStartsWith('/wiki'),
     )
     .subscribe(async message => {
       const args = SearchWikiProps.decode(yargsParser(message.content));
@@ -75,18 +74,16 @@ export const searchWiki: Consumer = context =>
     });
 
 export const interactiveWiki: Consumer = context =>
-  context.message$
-    .pipe(filter(message => !message.author.bot))
-    .subscribe(async message => {
-      const match = /^(?<query>.+?)\s?とは$/.exec(message.content);
-      if (!match) return;
+  context.message$.pipe(filterNotBot).subscribe(async message => {
+    const match = /^(?<query>.+?)\s?とは$/.exec(message.content);
+    if (!match) return;
 
-      const query = oc(match.groups).query();
-      if (!query) return;
+    const query = oc(match.groups).query();
+    if (!query) return;
 
-      return wikipediaHandler({
-        query: query,
-        host: 'ja.wikipedia.org',
-        message,
-      });
+    return wikipediaHandler({
+      query: query,
+      host: 'ja.wikipedia.org',
+      message,
     });
+  });

@@ -1,11 +1,12 @@
 import { MessageEmbed } from 'discord.js';
-import { filter } from 'rxjs/operators';
 import { Consumer } from '.';
+import { filterNotBot, filterStartsWith } from '../operators';
 
 export const quote: Consumer = context =>
   context.message$
     .pipe(
-      filter(message => !message.author.bot && message.content.startsWith('>')),
+      filterNotBot,
+      filterStartsWith('>'),
     )
     .subscribe(async message => {
       // tslint:disable-next-line no-floating-promises
