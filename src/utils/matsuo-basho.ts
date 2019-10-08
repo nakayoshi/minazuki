@@ -106,7 +106,7 @@ export class MatsuoBasho {
    */
   protected *tokensIterableGenerator(
     tokens: Kuromoji.Token[],
-  ): IterableIterator<Kuromoji.Token> {
+  ): Iterator<Kuromoji.Token, void, true | undefined> {
     let index = 0;
     let lastIndex = 0;
 
@@ -174,7 +174,7 @@ export class MatsuoBasho {
    * @param positionInHaiku position of mora in the rule of haiku
    */
   protected findMora(
-    tokens: IterableIterator<Kuromoji.Token>,
+    tokens: Iterator<Kuromoji.Token, void, boolean | undefined>,
     rule: number,
     positionInHaiku: number,
   ): string | null {

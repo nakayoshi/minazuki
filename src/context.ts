@@ -2,6 +2,7 @@ import Discord, { Message, VoiceState } from 'discord.js';
 import { fromEvent } from 'rxjs';
 import { config } from './config';
 import { evaluateExpr } from './consumers/evaluate';
+import { forward } from './consumers/forward';
 import { haiku } from './consumers/haiku';
 import { quote } from './consumers/quote';
 import {
@@ -59,6 +60,7 @@ export class Context {
       interactiveWiki,
       searchWiki,
       quote,
+      forward,
       safeDisconnect,
     ].forEach(consumer => {
       consumer(this);

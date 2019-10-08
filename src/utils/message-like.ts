@@ -1,10 +1,11 @@
-import { Message } from 'discord.js';
+import { DMChannel, Message, TextChannel } from 'discord.js';
 
 export const interpretMessageLike = async (
   messageLike: string,
   parentMessage: Message,
+  channel_?: TextChannel | DMChannel,
 ) => {
-  const { channel } = parentMessage;
+  const channel = channel_ || parentMessage.channel;
 
   // Query by its ID
   if (/^[0-9]+$/.test(messageLike)) {

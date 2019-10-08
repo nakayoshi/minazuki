@@ -1,7 +1,7 @@
-import { MessageEmbed } from 'discord.js';
 import { Consumer } from '.';
 import { filterNotBot, filterStartsWith } from '../operators';
 import { interpretMessageLike } from '../utils/message-like';
+import { toQuotation } from '../utils/to-quotation';
 
 export const quote: Consumer = context =>
   context.message$
@@ -21,24 +21,16 @@ export const quote: Consumer = context =>
         return channel.stopTyping(true);
       }
 
-      const quotation = await interpretMessageLike(
+      const matchedMessage = await interpretMessageLike(
         match.groups.messageLike,
         message,
       );
 
-      if (!quotation) {
+      if (!matchedMessage) {
         return channel.stopTyping(true);
       }
 
-      const embed = new MessageEmbed()
-        .setAuthor(
-          quotation.author.tag,
-          quotation.author.avatarURL({ size: 16 }),
-          quotation.url,
-        )
-        .setDescription(quotation.content)
-        .setTimestamp(quotation.createdTimestamp);
-
+      const embed = toQuotation(matchedMessage);
       channel.stopTyping(true);
       return channel.send(embed);
     });
