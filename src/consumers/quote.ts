@@ -1,44 +1,44 @@
 import { MessageEmbed } from 'discord.js';
 import { Consumer } from '.';
 import { filterNotBot, filterStartsWith } from '../operators';
+import { interpretMessageLike } from '../utils/message-like';
 
 export const quote: Consumer = context =>
   context.message$
     .pipe(
       filterNotBot,
-      filterStartsWith('>'),
+      filterStartsWith('> '),
     )
     .subscribe(async message => {
+      const { channel, content } = message;
+
       // tslint:disable-next-line no-floating-promises
-      message.channel.startTyping();
+      channel.startTyping();
 
-      const match = /\>\s?(?<query>[^\s]+)/.exec(message.content);
+      const match = /\>\s(?<messageLike>[^\s]+)/.exec(content);
 
-      if (!match || !match.groups || !match.groups.query) {
-        return message.channel.stopTyping(true);
+      if (!match || !match.groups || !match.groups.messageLike) {
+        return channel.stopTyping(true);
       }
 
-      const { query } = match.groups;
+      const quotation = await interpretMessageLike(
+        match.groups.messageLike,
+        message,
+      );
 
-      const quotedMessage = await message.channel.messages
-        .fetch({ limit: 100 })
-        .then(messages =>
-          messages.find(m => m.id !== message.id && m.content.includes(query)),
-        );
-
-      if (!quotedMessage) {
-        return message.channel.stopTyping(true);
+      if (!quotation) {
+        return channel.stopTyping(true);
       }
 
       const embed = new MessageEmbed()
         .setAuthor(
-          quotedMessage.author.tag,
-          quotedMessage.author.avatarURL({ size: 16 }),
-          quotedMessage.url,
+          quotation.author.tag,
+          quotation.author.avatarURL({ size: 16 }),
+          quotation.url,
         )
-        .setDescription(quotedMessage.content)
-        .setTimestamp(quotedMessage.createdTimestamp);
+        .setDescription(quotation.content)
+        .setTimestamp(quotation.createdTimestamp);
 
-      message.channel.stopTyping(true);
-      return message.channel.send(embed);
+      channel.stopTyping(true);
+      return channel.send(embed);
     });
