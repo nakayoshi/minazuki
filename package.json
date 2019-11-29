@@ -10,7 +10,7 @@
     "test:tslint": "tslint -c tslint.yml 'src/**/*.ts'",
     "test:prettier": "prettier -c 'src/**/*.ts'",
     "build": "tsc",
-    "start": "node ./es/main.js"
+    "start": "node ./dist/main.js"
   },
   "engines": {
     "node": "<=10"
