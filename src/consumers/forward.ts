@@ -19,11 +19,14 @@ export const forward: Consumer = context =>
       filterStartsWith('/forward'),
     )
     .subscribe(async message => {
+      context.before(message);
+
       const { content, channel } = message;
-      // console.log(`caught ${content}`);
       const args = ForwardProps.decode(yargsParser(content));
-      // console.log(`caught ${JSON.parse(args)}`);
-      if (isLeft(args)) return;
+
+      if (isLeft(args)) {
+        return context.after(message);
+      }
 
       const sourceChannel = context.client.channels.get(args.right.from);
 
@@ -33,7 +36,7 @@ export const forward: Consumer = context =>
           sourceChannel instanceof DMChannel
         )
       ) {
-        return;
+        return context.after(message);
       }
 
       const matchedMessage = await interpretMessageLike(
@@ -43,9 +46,11 @@ export const forward: Consumer = context =>
       );
 
       if (!matchedMessage) {
-        return;
+        return context.after(message);
       }
 
       const embed = toQuotation(matchedMessage);
-      return channel.send(embed);
+      await channel.send(embed);
+
+      return context.after(message);
     });

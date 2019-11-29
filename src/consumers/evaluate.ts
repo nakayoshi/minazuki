@@ -28,15 +28,15 @@ const codeblockfy = (code: string, language = 'json') => {
 
 const handleCode = async (expr: string, message: Message) => {
   let returnValue: any;
-  let thrownError: Error | undefined;
+  let hasThrownError: Error | undefined;
 
   try {
     returnValue = probablySafeEval(expr);
   } catch (error) {
-    thrownError = error as Error;
+    hasThrownError = error as Error;
   }
 
-  if (!thrownError) {
+  if (!hasThrownError) {
     try {
       // When the value is an object, JSON.stringify() just calls Object.toJSON
       // so you must wrap then with the vm to avoid allowing users to execute codes out of the sandbox
@@ -57,7 +57,7 @@ const handleCode = async (expr: string, message: Message) => {
   try {
     // As well as JSON.stringfiy(), you need to use vm technique here
     const errorMessage = probablySafeEval('error.toString()', {
-      error: thrownError,
+      error: hasThrownError,
     }) as string;
 
     // You have to ensure that the return value of `Error.prototype.toString()` is a string.
@@ -88,14 +88,13 @@ export const evaluateExpr: Consumer = context =>
       filterStartsWith('/eval'),
     )
     .subscribe(async message => {
-      // tslint:disable-next-line no-floating-promises
-      message.channel.startTyping();
+      context.before(message);
 
-      const codeBlockRegexp = /```(js|javascript)+\n(?<codeblock>(.|\n)+?)```/;
       const code = message.content.replace(/\/eval\s?/, '');
+      const codeBlockRegexp = /```(js|javascript)+\n(?<codeblock>(.|\n)+?)```/;
 
       if (!code) {
-        message.channel.stopTyping(true);
+        context.after(message);
         return message.channel.send('評価する式を指定してください。');
       }
 
@@ -111,6 +110,6 @@ export const evaluateExpr: Consumer = context =>
         expr = codeBlockMatches.groups.codeblock;
       }
 
-      message.channel.stopTyping(true);
+      context.after(message);
       return handleCode(expr, message);
     });

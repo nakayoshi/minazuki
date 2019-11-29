@@ -31,19 +31,17 @@ export const quote: Consumer = context =>
       filterStartsWith('> '),
     )
     .subscribe(async message => {
+      context.before(message);
       const { channel, content } = message;
 
-      if (!(channel instanceof TextChannel)) {
-        return;
+      if (!(channel instanceof TextChannel) || !message.deletable) {
+        return context.after(message);
       }
-
-      // tslint:disable-next-line no-floating-promises
-      channel.startTyping();
 
       // Match quote message
       const match = /\>\s(?<messageLike>[^\s]+)/.exec(content);
       if (!match || !match.groups || !match.groups.messageLike) {
-        return channel.stopTyping(true);
+        return context.after(message);
       }
 
       // Find message from message-like
@@ -51,21 +49,21 @@ export const quote: Consumer = context =>
         match.groups.messageLike,
         message,
       );
+
       if (!matchedMessage) {
-        return channel.stopTyping(true);
+        return context.after(message);
       }
 
       // Delete original message
-      if (message.deletable) {
-        await message.delete();
-      }
+      await message.delete();
 
-      const webhook = await fetchWebhookOrCreate(context, channel);
-      await webhook.send(undefined, {
-        username: message.author.username,
-        avatarURL: message.author.avatarURL(),
-        embeds: [toQuotation(matchedMessage)],
-      });
+      await fetchWebhookOrCreate(context, channel).then(webhook =>
+        webhook.send(undefined, {
+          username: message.author.username,
+          avatarURL: message.author.avatarURL(),
+          embeds: [toQuotation(matchedMessage)],
+        }),
+      );
 
-      return channel.stopTyping(true);
+      return context.after(message);
     });

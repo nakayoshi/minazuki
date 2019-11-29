@@ -47,6 +47,16 @@ export class Context {
     instance.regiserConsumers();
   }
 
+  public before = (message: Message) => {
+    // tslint:disable-next-line no-floating-promises
+    message.channel.startTyping();
+  };
+
+  public after = (message: Message) => {
+    // tslint:disable-next-line no-floating-promises
+    message.channel.stopTyping(true);
+  };
+
   /**
    * Activate consumers with instance of this context
    */

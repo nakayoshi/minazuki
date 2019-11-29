@@ -47,11 +47,12 @@ export const leaveVoiceChat: Consumer = context =>
       filterStartsWith('/leave'),
     )
     .subscribe(async message => {
-      const args = LeaveProps.decode(yargsParser(message.content));
-      if (isLeft(args)) return;
+      context.before(message);
 
-      // tslint:disable-next-line no-floating-promises
-      message.channel.startTyping();
+      const args = LeaveProps.decode(yargsParser(message.content));
+      if (isLeft(args)) {
+        return context.after(message);
+      }
 
       // VoiceConnection of same guild
       const guildsConnection = context.client.voiceConnections.find(
@@ -61,20 +62,20 @@ export const leaveVoiceChat: Consumer = context =>
       const { channel = oc(guildsConnection).channel.id() } = args.right;
 
       if (!channel) {
-        message.channel.stopTyping(true);
-        return message.channel.send('参加中のボイスチャットはありません');
+        await message.channel.send('参加中のボイスチャットはありません');
+        return context.after(message);
       }
 
       const voiceChannel = context.client.channels.get(channel);
 
       if (!voiceChannel || !(voiceChannel instanceof VoiceChannel)) {
-        message.channel.stopTyping(true);
-        return message.channel.send('指定されたチャンネルは存在しません');
+        await message.channel.send('指定されたチャンネルは存在しません');
+        return context.after(message);
       }
 
       voiceChannel.leave();
-      message.channel.stopTyping(true);
-      return message.channel.send('ボイスチャットから退出しました');
+      await message.channel.send('ボイスチャットから退出しました');
+      return context.after(message);
     });
 
 const JoinProps = t.type({
@@ -89,31 +90,32 @@ export const joinVoiceChat: Consumer = async context =>
       filterStartsWith('/join'),
     )
     .subscribe(async message => {
-      const args = JoinProps.decode(yargsParser(message.content));
-      if (isLeft(args)) return;
+      context.before(message);
 
-      // tslint:disable-next-line no-floating-promises
-      message.channel.startTyping();
+      const args = JoinProps.decode(yargsParser(message.content));
+      if (isLeft(args)) {
+        return context.after(message);
+      }
 
       // Set default `channel` arg to the ID of the channel which sender currently join
       const senderVoiceChannel = oc(message).member.voice.channel.id();
       const { channel = senderVoiceChannel } = args.right;
 
       if (!channel) {
-        message.channel.stopTyping(true);
-        return message.channel.send(
+        await message.channel.send(
           '発言者がボイスチャットに参加している場合のみ参加可能です',
         );
+        return context.after(message);
       }
 
       const voiceChannel = context.client.channels.get(channel);
 
       if (!voiceChannel || !(voiceChannel instanceof VoiceChannel)) {
-        message.channel.stopTyping(true);
-        return message.channel.send('指定されたチャンネルは存在しません');
+        await message.channel.send('指定されたチャンネルは存在しません');
+        return context.after(message);
       }
 
       await voiceChannel.join();
-      message.channel.stopTyping(true);
-      return message.channel.send('ボイスチャットに参加しました');
+      await message.channel.send('ボイスチャットに参加しました');
+      return context.after(message);
     });
