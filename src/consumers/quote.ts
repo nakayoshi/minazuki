@@ -26,10 +26,7 @@ const fetchWebhookOrCreate = async (context: Context, channel: TextChannel) => {
 
 export const quote: Consumer = context =>
   context.message$
-    .pipe(
-      filterNotBot,
-      filterStartsWith('> '),
-    )
+    .pipe(filterNotBot, filterStartsWith('> '))
     .subscribe(async message => {
       context.before(message);
       const { channel, content } = message;
@@ -40,7 +37,8 @@ export const quote: Consumer = context =>
 
       // Match quote message
       const match = /\>\s(?<messageLike>[^\s]+)/.exec(content);
-      if (!match || !match.groups || !match.groups.messageLike) {
+
+      if (!match?.groups?.messageLike) {
         return context.after(message);
       }
 

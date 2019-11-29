@@ -1,7 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
-import { oc } from 'ts-optchain';
 import WikiJS from 'wikijs';
 import yargsParser from 'yargs-parser';
 import { Consumer } from '.';
@@ -49,10 +48,7 @@ const SearchWikiProps = t.type({
 
 export const searchWiki: Consumer = context =>
   context.message$
-    .pipe(
-      filterNotBot,
-      filterStartsWith('/wiki'),
-    )
+    .pipe(filterNotBot, filterStartsWith('/wiki'))
     .subscribe(async message => {
       context.before(message);
 
@@ -82,7 +78,7 @@ export const interactiveWiki: Consumer = context =>
     if (!match) return;
     context.before(message);
 
-    const query = oc(match.groups).query();
+    const query = match?.groups?.query;
 
     if (!query) {
       return context.after(message);

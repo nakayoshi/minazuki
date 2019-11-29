@@ -83,10 +83,7 @@ const handleCode = async (expr: string, message: Message) => {
 
 export const evaluateExpr: Consumer = context =>
   context.message$
-    .pipe(
-      filterNotBot,
-      filterStartsWith('/eval'),
-    )
+    .pipe(filterNotBot, filterStartsWith('/eval'))
     .subscribe(async message => {
       context.before(message);
 
@@ -98,17 +95,8 @@ export const evaluateExpr: Consumer = context =>
         return message.channel.send('評価する式を指定してください。');
       }
 
-      let expr = code;
-
       const codeBlockMatches = codeBlockRegexp.exec(code);
-
-      if (
-        codeBlockMatches &&
-        codeBlockMatches.groups &&
-        codeBlockMatches.groups.codeblock
-      ) {
-        expr = codeBlockMatches.groups.codeblock;
-      }
+      const expr = codeBlockMatches?.groups?.codeblock ?? code;
 
       context.after(message);
       return handleCode(expr, message);

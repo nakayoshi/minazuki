@@ -2,7 +2,6 @@ import { VoiceChannel } from 'discord.js';
 import { isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { filter } from 'rxjs/operators';
-import { oc } from 'ts-optchain';
 import yargsParser from 'yargs-parser';
 import { Consumer } from '.';
 import { filterNotBot, filterStartsWith } from '../operators';
@@ -21,7 +20,7 @@ export const speakVoiceChat: Consumer = async context =>
     const { voiceText } = context;
 
     const connection = context.client.voiceConnections.find(
-      c => c.channel.guild.id === oc(message).guild.id(),
+      c => c.channel.guild.id === message?.guild?.id,
     );
 
     if (!connection) return;
@@ -42,10 +41,7 @@ const LeaveProps = t.type({
 
 export const leaveVoiceChat: Consumer = context =>
   context.message$
-    .pipe(
-      filterNotBot,
-      filterStartsWith('/leave'),
-    )
+    .pipe(filterNotBot, filterStartsWith('/leave'))
     .subscribe(async message => {
       context.before(message);
 
@@ -56,10 +52,9 @@ export const leaveVoiceChat: Consumer = context =>
 
       // VoiceConnection of same guild
       const guildsConnection = context.client.voiceConnections.find(
-        c => c.channel.guild.id === oc(message).guild.id(),
+        c => c.channel.guild.id === message?.guild?.id,
       );
-
-      const { channel = oc(guildsConnection).channel.id() } = args.right;
+      const channel = args.right.channel ?? guildsConnection?.channel?.id;
 
       if (!channel) {
         await message.channel.send('参加中のボイスチャットはありません');
@@ -68,7 +63,7 @@ export const leaveVoiceChat: Consumer = context =>
 
       const voiceChannel = context.client.channels.get(channel);
 
-      if (!voiceChannel || !(voiceChannel instanceof VoiceChannel)) {
+      if (!(voiceChannel instanceof VoiceChannel)) {
         await message.channel.send('指定されたチャンネルは存在しません');
         return context.after(message);
       }
@@ -85,10 +80,7 @@ const JoinProps = t.type({
 
 export const joinVoiceChat: Consumer = async context =>
   context.message$
-    .pipe(
-      filterNotBot,
-      filterStartsWith('/join'),
-    )
+    .pipe(filterNotBot, filterStartsWith('/join'))
     .subscribe(async message => {
       context.before(message);
 
@@ -98,8 +90,8 @@ export const joinVoiceChat: Consumer = async context =>
       }
 
       // Set default `channel` arg to the ID of the channel which sender currently join
-      const senderVoiceChannel = oc(message).member.voice.channel.id();
-      const { channel = senderVoiceChannel } = args.right;
+      const senderVoiceChannel = message?.member?.voice?.channel?.id;
+      const channel = args.right.channel ?? senderVoiceChannel;
 
       if (!channel) {
         await message.channel.send(
@@ -110,7 +102,7 @@ export const joinVoiceChat: Consumer = async context =>
 
       const voiceChannel = context.client.channels.get(channel);
 
-      if (!voiceChannel || !(voiceChannel instanceof VoiceChannel)) {
+      if (!(voiceChannel instanceof VoiceChannel)) {
         await message.channel.send('指定されたチャンネルは存在しません');
         return context.after(message);
       }

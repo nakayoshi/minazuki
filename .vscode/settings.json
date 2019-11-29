@@ -7,5 +7,6 @@
   "files.trimTrailingWhitespace": true,
   "npm.packageManager": "yarn",
   "tslint.packageManager": "yarn",
-  "tslint.configFile": "./tslint.yml"
+  "tslint.configFile": "./tslint.yml",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
