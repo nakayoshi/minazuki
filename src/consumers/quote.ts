@@ -52,16 +52,16 @@ export const quote: Consumer = context =>
         return context.after(message);
       }
 
-      // Delete original message
-      await message.delete();
+      context.after(message);
 
-      await fetchWebhookOrCreate(context, channel).then(webhook =>
-        webhook.send(undefined, {
+      await fetchWebhookOrCreate(context, channel).then(async webhook =>
+        webhook.send(`[❯ 投稿を表示](<${message.url}>)`, {
+          embeds: [toQuotation(matchedMessage)],
           username: message.author.username,
           avatarURL: message.author.avatarURL(),
-          embeds: [toQuotation(matchedMessage)],
         }),
       );
 
-      return context.after(message);
+      // Delete original message
+      await message.delete();
     });
