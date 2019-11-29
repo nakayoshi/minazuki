@@ -1,7 +1,7 @@
 import { ClientUser, TextChannel, User } from 'discord.js';
 import { Consumer } from '.';
 import { Context } from '../context';
-import { filterNotBot, filterStartsWith } from '../operators';
+import { filterMatches, filterNotBot } from '../operators';
 import { interpretMessageLike } from '../utils/message-like';
 import { toQuotation } from '../utils/to-quotation';
 
@@ -24,11 +24,14 @@ const fetchWebhookOrCreate = async (context: Context, channel: TextChannel) => {
   return channel.createWebhook('minazuki');
 };
 
+const messageLikeRegexp = /\>\s(?<messageLike>.+)/;
+
 export const quote: Consumer = context =>
   context.message$
-    .pipe(filterNotBot, filterStartsWith('> '))
+    .pipe(filterNotBot, filterMatches(messageLikeRegexp))
     .subscribe(async message => {
       context.before(message);
+
       const { channel, content } = message;
 
       if (!(channel instanceof TextChannel) || !message.deletable) {
@@ -36,7 +39,8 @@ export const quote: Consumer = context =>
       }
 
       // Match quote message
-      const match = /\>\s(?<messageLike>[^\s]+)/.exec(content);
+      const match = messageLikeRegexp.exec(content);
+      const plain = content.replace(messageLikeRegexp, '').trim();
 
       if (!match?.groups?.messageLike) {
         return context.after(message);
@@ -54,14 +58,14 @@ export const quote: Consumer = context =>
 
       context.after(message);
 
-      await fetchWebhookOrCreate(context, channel).then(async webhook =>
-        webhook.send(`[❯ 投稿を表示](<${message.url}>)`, {
+      // Delete original message
+      await message.delete();
+
+      await fetchWebhookOrCreate(context, channel).then(webhook =>
+        webhook.send(plain, {
           embeds: [toQuotation(matchedMessage)],
           username: message.author.username,
           avatarURL: message.author.avatarURL(),
         }),
       );
-
-      // Delete original message
-      await message.delete();
     });
