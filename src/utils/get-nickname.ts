@@ -1,13 +1,9 @@
-import { Message } from 'discord.js';
+import { GuildMember, Message } from 'discord.js';
 
 export const getNickname = (message: Message) => {
-  if (!message.guild) {
-    return message.author.username;
+  if (message.author instanceof GuildMember) {
+    return message.author.nickname;
   }
 
-  const senderMembership = message.guild.members.find(
-    member => member.id === message.author.id,
-  );
-
-  return senderMembership.nickname;
+  return message.author.username;
 };
