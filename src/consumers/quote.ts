@@ -1,7 +1,8 @@
-import { ClientUser, TextChannel, User } from 'discord.js';
+import { TextChannel, User } from 'discord.js';
 import { Consumer } from '.';
 import { Context } from '../context';
 import { filterMatches, filterNotBot } from '../operators';
+import { getNickname } from '../utils/get-nickname';
 import { interpretMessageLike } from '../utils/message-like';
 import { toQuotation } from '../utils/to-quotation';
 
@@ -11,9 +12,7 @@ const fetchWebhookOrCreate = async (context: Context, channel: TextChannel) => {
     .then(webhooks =>
       webhooks.find(
         ({ owner }) =>
-          owner instanceof User &&
-          context.client.user instanceof ClientUser &&
-          owner.id === context.client.user.id,
+          owner instanceof User && owner.id === context.client.user?.id,
       ),
     );
 
@@ -58,14 +57,14 @@ export const quote: Consumer = context =>
 
       context.after(message);
 
-      // Delete original message
+      // Delete the original message
       await message.delete();
 
-      await fetchWebhookOrCreate(context, channel).then(webhook =>
-        webhook.send(plain, {
-          embeds: [toQuotation(matchedMessage)],
-          username: message.author.username,
-          avatarURL: message.author.avatarURL(),
-        }),
-      );
+      const webhook = await fetchWebhookOrCreate(context, channel);
+
+      await webhook.send(plain, {
+        embeds: [toQuotation(matchedMessage)],
+        username: getNickname(message),
+        avatarURL: message.author.avatarURL(),
+      });
     });
