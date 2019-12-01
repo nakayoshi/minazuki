@@ -29,12 +29,10 @@ export const quote: Consumer = context =>
   context.message$
     .pipe(filterNotBot, filterMatches(messageLikeRegexp))
     .subscribe(async message => {
-      context.before(message);
-
       const { channel, content } = message;
 
       if (!(channel instanceof TextChannel) || !message.deletable) {
-        return context.after(message);
+        return;
       }
 
       // Match quote message
@@ -42,7 +40,7 @@ export const quote: Consumer = context =>
       const plain = content.replace(messageLikeRegexp, '').trim();
 
       if (!match?.groups?.messageLike) {
-        return context.after(message);
+        return;
       }
 
       // Find message from message-like
@@ -52,10 +50,8 @@ export const quote: Consumer = context =>
       );
 
       if (!matchedMessage) {
-        return context.after(message);
+        return;
       }
-
-      context.after(message);
 
       // Delete the original message
       await message.delete();
