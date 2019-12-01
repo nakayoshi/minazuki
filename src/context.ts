@@ -4,6 +4,7 @@ import { config } from './config';
 import { evaluateExpr } from './consumers/evaluate';
 import { forward } from './consumers/forward';
 import { haiku } from './consumers/haiku';
+import { ping } from './consumers/ping';
 import { quote } from './consumers/quote';
 import {
   joinVoiceChat,
@@ -67,6 +68,7 @@ export class Context {
       joinVoiceChat,
       leaveVoiceChat,
       speakVoiceChat,
+      ping,
       interactiveWiki,
       searchWiki,
       quote,
