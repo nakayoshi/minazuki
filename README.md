@@ -9,7 +9,7 @@
 | `/eval expr`         | Evaluate JS code                                 |
 | `/join [--channel]`  | Join VC you currently joined in then speak messages from the guild |
 | `/leave [--channel]` | Leave from voice channel                         |
-| `>keyword`           | Quote message                                    |
+| `> keyword`           | Quote message                                    |
 | Always               | Detect your haiku                                |
 
 ## Deployment
