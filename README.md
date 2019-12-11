@@ -5,10 +5,10 @@
 ## Features
 | Command               | Discription                                      |
 | :-------------------- | :----------------------------------------------- |
-| `/wiki article name` | Search `foo` in Wikipedia                        |
+| `/wiki foo`          | Search `foo` on Wikipedia                        |
 | `/eval expr`         | Evaluate JS code                                 |
 | `/join [--channel]`  | Join VC you currently joined in then speak messages from the guild |
-| `/leave [--channel]` | Leave from voice channel                         |
+| `/leave [--channel]` | Leave from the voice channel                         |
 | `> keyword`           | Quote message                                    |
 | Always               | Detect your haiku                                |
 
