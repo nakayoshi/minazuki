@@ -18,7 +18,7 @@
   "dependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/form-data": "^2.5.0",
-    "@types/node": "^12.12.14",
+    "@types/node": "^12.12.17",
     "@types/node-fetch": "^2.5.4",
     "@types/query-string": "^6.3.0",
     "@types/tmp": "^0.1.0",
@@ -35,7 +35,7 @@
     "rxjs": "^6.5.3",
     "tmp": "^0.1.0",
     "twit": "^2.2.11",
-    "typescript": "^3.7.2",
+    "typescript": "^3.7.3",
     "wikijs": "^6.0.1",
     "yargs-parser": "^16.1.0"
   },
