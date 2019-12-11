@@ -23,7 +23,7 @@ const fetchWebhookOrCreate = async (context: Context, channel: TextChannel) => {
   return channel.createWebhook('minazuki');
 };
 
-const messageLikeRegexp = /\>\s(?<messageLike>.+)/;
+const messageLikeRegexp = /^\>\s(?<messageLike>.+)/;
 
 export const quote: Consumer = context =>
   context.message$
