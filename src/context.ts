@@ -3,7 +3,6 @@ import { fromEvent } from 'rxjs';
 import { config } from './config';
 import { evaluateExpr } from './consumers/evaluate';
 import { forward } from './consumers/forward';
-import { haiku } from './consumers/haiku';
 import { ping } from './consumers/ping';
 import { quote } from './consumers/quote';
 import {
@@ -14,6 +13,7 @@ import {
 } from './consumers/voice-chat';
 import { interactiveWiki, searchWiki } from './consumers/wiki';
 import { VoiceText } from './utils/voice-text';
+// import { haiku } from './consumers/haiku';
 
 /**
  * Context
@@ -45,7 +45,7 @@ export class Context {
     // tslint:disable-next-line no-console
     console.log(`Logged in as ${instance.client.user.tag}!`);
 
-    instance.regiserConsumers();
+    instance.registerConsumers();
   }
 
   public before = (message: Message) => {
@@ -61,10 +61,9 @@ export class Context {
   /**
    * Activate consumers with instance of this context
    */
-  protected regiserConsumers = () => {
+  protected registerConsumers = () => {
     [
       evaluateExpr,
-      haiku,
       joinVoiceChat,
       leaveVoiceChat,
       speakVoiceChat,
@@ -74,6 +73,7 @@ export class Context {
       quote,
       forward,
       safeDisconnect,
+      // haiku,
     ].forEach(consumer => {
       consumer(this);
     });
