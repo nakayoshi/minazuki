@@ -1,27 +1,10 @@
-import { TextChannel, User } from 'discord.js';
+import { TextChannel } from 'discord.js';
 import { Consumer } from '.';
-import { Context } from '../context';
 import { filterMatches, filterNotBot } from '../operators';
+import { fetchWebhook } from '../utils/fetch-webhook';
 import { getNickname } from '../utils/get-nickname';
 import { interpretMessageLike } from '../utils/message-like';
 import { toQuotation } from '../utils/to-quotation';
-
-const fetchWebhookOrCreate = async (context: Context, channel: TextChannel) => {
-  const webhook = await channel
-    .fetchWebhooks()
-    .then(webhooks =>
-      webhooks.find(
-        ({ owner }) =>
-          owner instanceof User && owner.id === context.client.user?.id,
-      ),
-    );
-
-  if (webhook) {
-    return webhook;
-  }
-
-  return channel.createWebhook('minazuki');
-};
 
 const messageLikeRegexp = /^\>\s(?<messageLike>.+)/m;
 
@@ -56,7 +39,7 @@ export const quote: Consumer = context =>
       // Delete the original message
       await message.delete();
 
-      const webhook = await fetchWebhookOrCreate(context, channel);
+      const webhook = await fetchWebhook(context, channel);
 
       await webhook.send(plain, {
         embeds: [toQuotation(matchedMessage)],

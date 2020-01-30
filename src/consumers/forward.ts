@@ -1,56 +1,53 @@
-import { DMChannel, TextChannel } from 'discord.js';
-import { isLeft } from 'fp-ts/lib/Either';
-import * as t from 'io-ts';
-import yargsParser from 'yargs-parser';
+import { TextChannel } from 'discord.js';
 import { Consumer } from '.';
-import { filterNotBot, filterStartsWith } from '../operators';
+import { filterMatches } from '../operators';
+import { fetchWebhook } from '../utils/fetch-webhook';
+import { getNickname } from '../utils/get-nickname';
 import { interpretMessageLike } from '../utils/message-like';
 import { toQuotation } from '../utils/to-quotation';
 
-const ForwardProps = t.type({
-  _: t.tuple([t.literal('/forward'), t.string]),
-  from: t.string,
-});
+const messageUrlRegExp = /https:\/\/discordapp.com\/channels\/(?<server>.+)\/(?<channel>.+)\/(?<message>.+)/m;
 
 export const forward: Consumer = context =>
   context.message$
-    .pipe(
-      filterNotBot,
-      filterStartsWith('/forward'),
-    )
+    .pipe(filterMatches(messageUrlRegExp))
     .subscribe(async message => {
-      context.before(message);
-
-      const { content, channel } = message;
-      const args = ForwardProps.decode(yargsParser(content));
-
-      if (isLeft(args)) {
-        return context.after(message);
+      if (!(message.channel instanceof TextChannel) || !message.deletable) {
+        return;
       }
 
-      const sourceChannel = context.client.channels.get(args.right.from);
+      const { content } = message;
+      const match = messageUrlRegExp.exec(content);
+      const plain = content.replace(messageUrlRegExp, '').trim();
 
-      if (
-        !(
-          sourceChannel instanceof TextChannel ||
-          sourceChannel instanceof DMChannel
-        )
-      ) {
-        return context.after(message);
+      if (!match?.groups?.channel || !match?.groups?.message) {
+        return;
+      }
+
+      const sourceChannel = context.client.channels.find(channel => {
+        return channel.id === match?.groups?.channel;
+      });
+
+      if (!(sourceChannel instanceof TextChannel)) {
+        return;
       }
 
       const matchedMessage = await interpretMessageLike(
-        `${args.right._[1]}`,
+        match.groups.message,
         message,
         sourceChannel,
       );
 
       if (!matchedMessage) {
-        return context.after(message);
+        return;
       }
 
-      const embed = toQuotation(matchedMessage);
-      await channel.send(embed);
+      await message.delete();
+      const webhook = await fetchWebhook(context, message.channel);
 
-      return context.after(message);
+      await webhook.send(plain, {
+        embeds: [toQuotation(matchedMessage)],
+        username: getNickname(message),
+        avatarURL: message.author.avatarURL(),
+      });
     });
