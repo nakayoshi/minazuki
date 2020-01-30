@@ -5,11 +5,12 @@
 ## Features
 | Command               | Discription                                      |
 | :-------------------- | :----------------------------------------------- |
-| `/wiki foo`          | Search `foo` on Wikipedia                        |
-| `/eval expr`         | Evaluate JS code                                 |
+| `/wiki <foo>`          | Search `foo` on Wikipedia                        |
+| `/eval <expr>`         | Evaluate a JS code                                 |
 | `/join [--channel]`  | Join VC you currently joined in then speak messages from the guild |
 | `/leave [--channel]` | Leave from the voice channel                         |
-| `> keyword` or `> message id` | Quote message                                    |
+| `> <keyword>` or `> <message id>` | Quote a message from the same channel |
+| `<message URL>` | Quote a message |
 | Always               | Detect your haiku                                |
 
 ## Deployment
