@@ -6,7 +6,7 @@ import { getNickname } from '../utils/get-nickname';
 import { interpretMessageLike } from '../utils/message-like';
 import { toQuotation } from '../utils/to-quotation';
 
-const messageUrlRegExp = /https:\/\/discordapp.com\/channels\/(?<server>.+)\/(?<channel>.+)\/(?<message>.+)/m;
+const messageUrlRegExp = /https:\/\/(ptb\.)?discordapp.com\/channels\/(?<server>.+)\/(?<channel>.+)\/(?<message>.+)/m;
 
 export const forward: Consumer = context =>
   context.message$
