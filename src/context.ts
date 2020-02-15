@@ -70,8 +70,8 @@ export class Context {
       ping,
       interactiveWiki,
       searchWiki,
-      quote,
-      forward,
+      // quote,
+      // forward,
       safeDisconnect,
       // haiku,
     ].forEach(consumer => {
