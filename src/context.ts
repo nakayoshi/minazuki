@@ -2,9 +2,9 @@ import Discord, { Message, VoiceState } from 'discord.js';
 import { fromEvent } from 'rxjs';
 import { config } from './config';
 import { evaluateExpr } from './consumers/evaluate';
-import { forward } from './consumers/forward';
+// import { forward } from './consumers/forward';
 import { ping } from './consumers/ping';
-import { quote } from './consumers/quote';
+// import { quote } from './consumers/quote';
 import {
   joinVoiceChat,
   leaveVoiceChat,
