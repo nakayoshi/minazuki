@@ -1,10 +1,9 @@
-import Discord, { Message, VoiceState } from 'discord.js';
+import Discord from 'discord.js';
 import { fromEvent } from 'rxjs';
 import { config } from './config';
 import { evaluateExpr } from './consumers/evaluate';
-// import { forward } from './consumers/forward';
+import { highlight } from './consumers/highlight';
 import { ping } from './consumers/ping';
-// import { quote } from './consumers/quote';
 import {
   joinVoiceChat,
   leaveVoiceChat,
@@ -13,26 +12,29 @@ import {
 } from './consumers/voice-chat';
 import { interactiveWiki, searchWiki } from './consumers/wiki';
 import { VoiceText } from './utils/voice-text';
-// import { haiku } from './consumers/haiku';
+
+export interface Raw<T = unknown> {
+  t: Discord.WSEventType;
+  s: number;
+  op: number;
+  d: T;
+}
 
 /**
  * Context
  */
 export class Context {
-  /** Discord client */
   public client = new Discord.Client();
 
-  /** VoiceText client */
   public voiceText = new VoiceText(config.voiceTextToken);
 
-  /** Message observable */
-  public message$ = fromEvent<Message>(this.client, 'message');
+  public message$ = fromEvent<Discord.Message>(this.client, 'message');
 
-  /** Connection observable */
-  public voiceStateUpdate$ = fromEvent<[VoiceState, VoiceState]>(
-    this.client,
-    'voiceStateUpdate',
-  );
+  public raw$ = fromEvent<[Raw]>(this.client, 'raw');
+
+  public voiceStateUpdate$ = fromEvent<
+    [Discord.VoiceState, Discord.VoiceState]
+  >(this.client, 'voiceStateUpdate');
 
   /**
    * Initialize context
@@ -48,12 +50,12 @@ export class Context {
     instance.registerConsumers();
   }
 
-  public before = (message: Message) => {
+  public before = (message: Discord.Message) => {
     // tslint:disable-next-line no-floating-promises
     message.channel.startTyping();
   };
 
-  public after = (message: Message) => {
+  public after = (message: Discord.Message) => {
     // tslint:disable-next-line no-floating-promises
     message.channel.stopTyping(true);
   };
@@ -68,12 +70,10 @@ export class Context {
       leaveVoiceChat,
       speakVoiceChat,
       ping,
+      highlight,
       interactiveWiki,
       searchWiki,
-      // quote,
-      // forward,
       safeDisconnect,
-      // haiku,
     ].forEach(consumer => {
       consumer(this);
     });
