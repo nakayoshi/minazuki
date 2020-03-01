@@ -59,13 +59,10 @@ const findHighlightChannel = (guild: Discord.Guild) => {
 };
 
 const countMeaningfulReactions = (reactions: Discord.ReactionStore) =>
-  reactions
-    .array()
-    .reduce<number>(
-      (count, reaction) =>
-        count + reaction.users.filter(user => !user.bot).size,
-      0,
-    );
+  reactions.array().reduce((count, reaction) => {
+    const bots = reaction.users.array().filter(user => user.bot);
+    return count + (reaction.count - bots.length);
+  }, 0);
 
 const shouldNoticeReaction = (n: number) => {
   // [5, 10, 20..90, 100, 200...900, 1000, 2000...9000]
@@ -93,7 +90,7 @@ export const highlight: Consumer = context =>
       await highlightChannel.send(
         `🎉 ${toMention(
           message.member.user,
-        )}さんの投稿が${count}リアクションを獲得しました！`,
+        )}さんの投稿が**${count}リアクション**を獲得しました！`,
         {
           embed: toEmbed(message),
         },
