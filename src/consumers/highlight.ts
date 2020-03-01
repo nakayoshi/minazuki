@@ -2,8 +2,8 @@ import Discord from 'discord.js';
 import { filter } from 'rxjs/operators';
 import { Consumer } from '.';
 import { Raw } from '../context';
+import { getNickname } from '../utils/get-nickname';
 import { toEmbed } from '../utils/to-embed';
-import { toMention } from '../utils/to-mention';
 
 // Magic-topic
 const HIGHLIGHTS = '__HIGHLIGHTS__';
@@ -88,8 +88,8 @@ export const highlight: Consumer = context =>
       if (!highlightChannel) return;
 
       await highlightChannel.send(
-        `🎉 ${toMention(
-          message.member.user,
+        `🎉 ${getNickname(
+          message,
         )}さんの投稿が**${count}リアクション**を獲得しました！`,
         {
           embed: toEmbed(message),
