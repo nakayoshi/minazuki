@@ -61,6 +61,15 @@ const findHighlightChannel = (guild: Discord.Guild) => {
   return channel instanceof Discord.TextChannel ? channel : undefined;
 };
 
+const countMeaningfulReactions = (reactions: Discord.ReactionStore) =>
+  reactions
+    .array()
+    .reduce<number>(
+      (count, reaction) =>
+        count + reaction.users.filter(user => !user.bot).size,
+      0,
+    );
+
 export const highlight: Consumer = context =>
   context.raw$
     .pipe(filter(isMessageReactionAdd))
@@ -69,12 +78,11 @@ export const highlight: Consumer = context =>
 
       const channel = await context.client.channels.fetch(channel_id);
       if (!(channel instanceof Discord.TextChannel)) return;
-      const message = await channel.messages.fetch(message_id);
 
-      if (
-        message.reactions.size < THRESHOLD ||
-        message.reactions.size % THRESHOLD !== 0
-      ) {
+      const message = await channel.messages.fetch(message_id);
+      const count = countMeaningfulReactions(message.reactions);
+
+      if (count < THRESHOLD || count % THRESHOLD !== 0) {
         return;
       }
 
@@ -82,9 +90,9 @@ export const highlight: Consumer = context =>
       if (!highlightChannel) return;
 
       await highlightChannel.send(
-        `🎉 ${toMention(message.member.user)}さんの投稿が${
-          message.reactions.size
-        }リアクションを獲得しました！`,
+        `🎉 ${toMention(
+          message.member.user,
+        )}さんの投稿が${count}リアクションを獲得しました！`,
         {
           embed: toEmbed(message),
         },
