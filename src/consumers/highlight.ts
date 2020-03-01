@@ -8,9 +8,6 @@ import { toMention } from '../utils/to-mention';
 // Magic-topic
 const HIGHLIGHTS = '__HIGHLIGHTS__';
 
-// Threshold to highlight
-const THRESHOLD = 5;
-
 interface ReactionPayload {
   user_id: string;
   message_id: string;
@@ -70,6 +67,13 @@ const countMeaningfulReactions = (reactions: Discord.ReactionStore) =>
       0,
     );
 
+const shouldNoticeReaction = (n: number) => {
+  // [5, 10, 20..90, 100, 200...900, 1000, 2000...9000]
+  if (n === 5) return true;
+  if (n >= 10 && n % 10 ** Math.floor(Math.log10(n)) === 0) return true;
+  return false;
+};
+
 export const highlight: Consumer = context =>
   context.raw$
     .pipe(filter(isMessageReactionAdd))
@@ -81,10 +85,7 @@ export const highlight: Consumer = context =>
 
       const message = await channel.messages.fetch(message_id);
       const count = countMeaningfulReactions(message.reactions);
-
-      if (count < THRESHOLD || count % THRESHOLD !== 0) {
-        return;
-      }
+      if (!shouldNoticeReaction(count)) return;
 
       const highlightChannel = findHighlightChannel(channel.guild);
       if (!highlightChannel) return;
