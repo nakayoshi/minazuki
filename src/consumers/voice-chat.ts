@@ -19,7 +19,7 @@ export const speakVoiceChat: Consumer = async context =>
   context.message$.subscribe(async message => {
     const { voiceText } = context;
 
-    const connection = context.client.voiceConnections.find(
+    const connection = context.client.voice?.connections.find(
       c => c.channel.guild.id === message?.guild?.id,
     );
 
@@ -51,7 +51,7 @@ export const leaveVoiceChat: Consumer = context =>
       }
 
       // VoiceConnection of same guild
-      const guildsConnection = context.client.voiceConnections.find(
+      const guildsConnection = context.client.voice?.connections.find(
         c => c.channel.guild.id === message?.guild?.id,
       );
       const channel = args.right.channel ?? guildsConnection?.channel?.id;
@@ -61,7 +61,7 @@ export const leaveVoiceChat: Consumer = context =>
         return context.after(message);
       }
 
-      const voiceChannel = context.client.channels.get(channel);
+      const voiceChannel = context.client.channels.cache.get(channel);
 
       if (!(voiceChannel instanceof VoiceChannel)) {
         await message.channel.send('指定されたチャンネルは存在しません');
@@ -100,7 +100,7 @@ export const joinVoiceChat: Consumer = async context =>
         return context.after(message);
       }
 
-      const voiceChannel = context.client.channels.get(channel);
+      const voiceChannel = context.client.channels.cache.get(channel);
 
       if (!(voiceChannel instanceof VoiceChannel)) {
         await message.channel.send('指定されたチャンネルは存在しません');

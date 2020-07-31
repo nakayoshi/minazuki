@@ -24,7 +24,7 @@
     "@types/tmp": "^0.1.0",
     "@types/twit": "^2.2.23",
     "@types/yargs-parser": "^13.1.0",
-    "discord.js": "discordjs/discord.js",
+    "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "fp-ts": "^2.2.0",
     "io-ts": "^2.0.1",

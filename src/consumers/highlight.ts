@@ -43,8 +43,8 @@ const findHighlightChannel = (guild: Discord.Guild) => {
   const cachedId = highlightChannelCache.get(guild.id);
 
   const channel = cachedId
-    ? guild.channels.get(cachedId)
-    : guild.channels.find(
+    ? guild.channels.cache.get(cachedId)
+    : guild.channels.cache.find(
         c =>
           c instanceof Discord.TextChannel &&
           !!c.topic &&
@@ -58,9 +58,10 @@ const findHighlightChannel = (guild: Discord.Guild) => {
   return channel instanceof Discord.TextChannel ? channel : undefined;
 };
 
-const countMeaningfulReactions = (reactions: Discord.ReactionStore) =>
-  reactions.array().reduce((count, reaction) => {
-    const bots = reaction.users.array().filter(user => user.bot);
+const countMeaningfulReactions = (reactions: Discord.ReactionManager) =>
+  reactions.cache.array().reduce((count, reaction) => {
+    const bots = reaction.users.cache.array().filter(user => user.bot);
+    if (reaction.count == null) return count;
     return count + (reaction.count - bots.length);
   }, 0);
 
